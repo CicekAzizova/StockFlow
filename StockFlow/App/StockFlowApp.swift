@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct StockFlowApp: App {
+    let dependencies = AppDependencies()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView(viewModel: dependencies.makeLoginViewModel())
         }
     }
 }
