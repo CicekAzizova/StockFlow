@@ -21,13 +21,12 @@ final class LoginViewModel {
     var state: LoginViewState = .idle
     var email: String = ""
     var password: String = ""
-    var user: User?
-    
+  
     func login() async {
         state = .loading
         do {
             let result = try await authRepository.login(email: email, password: password)
-            user = result.user
+            
             state = .loaded(result.user)
             
         } catch let error  {

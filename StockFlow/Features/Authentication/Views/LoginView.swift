@@ -11,22 +11,34 @@ import SwiftUI
 struct LoginView: View {
 
     @State var viewModel: LoginViewModel
+    
+    let dependencies: AppDependencies
+    let appStateManager: AppStateManager
 
     @FocusState private var focusedField: FocusedField?
 
     var body: some View {
-        content
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(24)
-            .background(Color.background)
-            .ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.background
+                    .ignoresSafeArea()
+
+                content
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                    )
+                    .padding(24)
+            }
+        }
     }
 
     // MARK: - Login Form
 
     @ViewBuilder
     var loginForm: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 8) {
 
             Image(.logo)
 
@@ -79,20 +91,16 @@ struct LoginView: View {
     // MARK: - Sign In Button
 
     var signInButton: some View {
-        Button {
+        AppButtonView(
+            title: "Sign In",
+            isLoading: viewModel.state.isLoading
+        ) {
             Task {
                 await viewModel.login()
+                if case .loaded(_) = viewModel.state {
+                    appStateManager.state = .authenticated
+                }
             }
-        } label: {
-            Text("Sign In")
-                .foregroundStyle(.white)
-                .font(.inter(.bold, size: 16))
-                .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .background(.primary)
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 12)
-                )
         }
         .padding(.top, 50)
     }
@@ -107,15 +115,23 @@ struct LoginView: View {
                 .foregroundStyle(.textSecondary)
                 .padding(.bottom, 32)
 
-            Button {
-                // Create store action
-            } label: {
-                Text("Create a store")
-                    .font(.inter(.bold, size: 14))
-            }
+            createStoreButton
         }
         .frame(maxWidth: .infinity, alignment: .center)
         .padding()
+    }
+    
+    var createStoreButton: some View {
+        NavigationLink {
+            CreateStoreView(
+                viewModel: dependencies
+                    .makeCreateStoreViewModel(), appStateManager: appStateManager
+            )
+        } label: {
+            Text("Create Store")
+                .font(.inter(.medium, size: 15))
+                .foregroundStyle(.brandPrimary)
+        }
     }
 
     // MARK: - Login Screen
@@ -144,9 +160,8 @@ struct LoginView: View {
         case .loading:
             ProgressView("Signing in...")
 
-        case .loaded(let user):
-            Text("Welcome, \(user.firstName)!")
-                .font(.inter(.bold, size: 24))
+        case .loaded:
+            ProgressView()
 
         case .error:
             loginScreen
@@ -157,19 +172,25 @@ struct LoginView: View {
 // MARK: - Preview
 
 #Preview("Idle State") {
+    let dependencies = AppDependencies()
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+
+
     LoginView(
-        viewModel: AppDependencies().makeLoginViewModel()
+        viewModel: dependencies.makeLoginViewModel(),
+        dependencies: dependencies, appStateManager: appStateManager
     )
 }
 
 #Preview("Error State") {
-    let viewModel = AppDependencies().makeLoginViewModel()
+    let dependencies = AppDependencies()
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+
+    let viewModel = dependencies.makeLoginViewModel()
 
     viewModel.state = .error(
         "Email və ya password yanlışdır."
     )
 
-    return LoginView(
-        viewModel: viewModel
-    )
+    return LoginView(viewModel: viewModel, dependencies: dependencies, appStateManager: appStateManager)
 }

@@ -13,6 +13,4 @@ struct User: Decodable {
     let lastName: String
     let role: UserRole
     let storeId: Int
-  
-    
 }

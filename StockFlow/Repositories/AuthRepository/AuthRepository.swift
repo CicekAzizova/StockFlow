@@ -16,9 +16,9 @@ final class DefaultAuthRepository: AuthRepository {
     private let authService: AuthService
     private let tokenStorage: TokenStoring
     
-    init(authService: AuthService, keychainService: TokenStoring) {
+    init(authService: AuthService, tokenStorage: TokenStoring) {
         self.authService = authService
-        self.tokenStorage = keychainService
+        self.tokenStorage = tokenStorage
     }
     
     func login(email: String, password: String) async throws -> LoginResponse {

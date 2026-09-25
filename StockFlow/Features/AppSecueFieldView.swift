@@ -11,6 +11,7 @@ struct AppSecureFieldView: View {
     
     let placeholder: String
     let focusedField: FocusedField
+    var errorMessage: String? = nil
     var submitLabel: SubmitLabel = .done
     var onSubmit: (() -> Void)? = nil
     
@@ -53,10 +54,13 @@ struct AppSecureFieldView: View {
                     .foregroundStyle(.iconSecondary)
                 }
             }
+            
             .padding(.horizontal, 12)
             .frame(height: 44)
             .background(.white)
             .overlay {
+                RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray, lineWidth: 1)
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(
                         focusedFieldBinding.wrappedValue == focusedField
@@ -65,6 +69,12 @@ struct AppSecureFieldView: View {
                         lineWidth: 1.5
                     )
             }
+            if let errorMessage {
+                       Text(errorMessage)
+                           .font(.inter(.regular, size: 12))
+                           .foregroundStyle(.red)
+                           .padding(.leading, 4)
+                   }
         }
     }
 }

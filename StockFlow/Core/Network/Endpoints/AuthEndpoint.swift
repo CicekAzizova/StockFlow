@@ -13,14 +13,14 @@ enum AuthEndpoint: Endpoint {
     
     var path: String {
         switch self {
-        case .login(let email, let password):
+        case .login:
             return "/auth/login"
         }
     }
     
     var method: HttpMethod {
         switch self {
-        case .login(let email, let password):
+        case .login:
             return .post
         }
     }

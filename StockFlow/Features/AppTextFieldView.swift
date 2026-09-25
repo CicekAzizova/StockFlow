@@ -7,12 +7,15 @@
 
 import SwiftUI
 
-enum FocusedField: Hashable , CaseIterable {
+enum FocusedField: Hashable, CaseIterable {
+    case name
     case email
     case password
+    case phone
+    case storeName
+    case storeAddress
+    case storePhone
 }
-
-import SwiftUI
 
 struct AppTextFieldView: View {
 
@@ -20,6 +23,7 @@ struct AppTextFieldView: View {
     let placeholder: String
     let icon: String?
     let focusedField: FocusedField
+    var errorMessage: String? = nil
 
     var textContentType: UITextContentType? = nil
     var keyboardType: UIKeyboardType = .default
@@ -55,12 +59,21 @@ struct AppTextFieldView: View {
             .background(.white)
             .overlay {
                 RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.gray, lineWidth: 1)
+                RoundedRectangle(cornerRadius: 12)
                     .stroke(
                         focusedFieldBinding.wrappedValue == focusedField
                         ? Color.accentColor
                         : Color.clear,
                         lineWidth: 1.5
                     )
+            }
+            
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.inter(.regular, size: 12))
+                                    .foregroundStyle(.red)
+                                    .padding(.leading, 4)
             }
         }
     }
