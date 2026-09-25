@@ -9,11 +9,22 @@ import SwiftUI
 
 @main
 struct StockFlowApp: App {
-    let dependencies = AppDependencies()
+    let dependencies: AppDependencies
+    let appStateMenager: AppStateManager
     
+    init() {
+        let dependencies = AppDependencies()
+        self.dependencies = dependencies
+        
+        let appStateMenager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+        
+        appStateMenager.readToken()
+        
+        self.appStateMenager = appStateMenager
+    }
     var body: some Scene {
         WindowGroup {
-            LoginView(viewModel: dependencies.makeLoginViewModel())
+            AppRouter(appStateManager: appStateMenager, dependencies: dependencies)
         }
     }
 }
