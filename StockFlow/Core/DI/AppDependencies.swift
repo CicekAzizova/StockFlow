@@ -6,36 +6,52 @@
 //
 final class AppDependencies {
     let networkService: NetworkService
-    let authService: AuthService
+    
     let tokenStorage: TokenStoring
+    
+    let authService: AuthService
     let authRepository: AuthRepository
+    
     let storeService: StoreService
     let storeRepository: StoreRepository
+    
+    let userService: UserService
+    let userRepository: UserRepository
+    
 
     init() {
-        let networkService = DefaultNetworkService()
+        let tokenStorage = KeychainWrapper()
+        let networkService = DefaultNetworkService(tokenStoring: tokenStorage)
 
         let authService = MockAuthService()
-        let tokenStorage = KeychainWrapper()
-
         let authRepository = DefaultAuthRepository(
             authService: authService,
             tokenStorage: tokenStorage
         )
 
         let storeService = MockStoreService()
-
         let storeRepository = DefaultStoreRepository(
             storeService: storeService,
             tokenStorage: tokenStorage
         )
+        
+        let userService = MockUserService()
+        let userRepository = DefaultUserRepository(
+            userService: userService,
+            tokenStorage: tokenStorage
+        )
 
-        self.networkService = networkService
-        self.authService = authService
         self.tokenStorage = tokenStorage
+        self.networkService = networkService
+
+        self.authService = authService
         self.authRepository = authRepository
+        
         self.storeService = storeService
         self.storeRepository = storeRepository
+        
+        self.userService = userService
+        self.userRepository = userRepository
     }
 
     @MainActor
@@ -50,5 +66,10 @@ final class AppDependencies {
         CreateStoreViewModel(
             storeRepository: storeRepository
         )
+    }
+    
+    @MainActor
+    func makeProfileViewModel() -> ProfileViewModel {
+        ProfileViewModel(userRepository: userRepository)
     }
 }

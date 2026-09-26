@@ -22,7 +22,7 @@ enum StoreEndpoint: Endpoint {
     var path: String {
         switch self {
         case .createStore:
-            "/create"
+            "/auth/register"
         }
     }
     

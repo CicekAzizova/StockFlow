@@ -25,7 +25,7 @@ struct AppRouter: View {
         case .unauthenticated:
             LoginView(viewModel: dependencies.makeLoginViewModel(), dependencies: dependencies, appStateManager: appStateManager)
         case .authenticated:
-            OwnerTabView()
+            OwnerTabView(dependencies: dependencies, appStateManager: appStateManager)
         }
     }
 }

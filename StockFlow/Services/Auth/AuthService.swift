@@ -19,11 +19,11 @@ final class DefaultAuthService: AuthService {
         self.networkService = networkService
     }
     func login(email: String, password: String) async throws -> LoginResponse {
-        let endPoint = AuthEndpoint.login(
+        let endpoint = AuthEndpoint.login(
             email: email,
             password: password
         )
-       return try await networkService.request(endPoint)
+       return try await networkService.request(endpoint)
     }
     
     

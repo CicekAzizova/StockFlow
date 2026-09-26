@@ -12,7 +12,8 @@ import Observation
 @Observable
 final class LoginViewModel {
     private let authRepository: AuthRepository
-    var alert: LoginAlert?
+    
+    var fieldErrors: [FocusedField: String] = [:]
     
     init(authRepository: AuthRepository) {
         self.authRepository = authRepository
@@ -23,6 +24,10 @@ final class LoginViewModel {
     var password: String = ""
   
     func login() async {
+        guard validateFields() else {
+                return
+        }
+        
         state = .loading
         do {
             let result = try await authRepository.login(email: email, password: password)
@@ -31,10 +36,23 @@ final class LoginViewModel {
             
         } catch let error  {
             state = .error(error.localizedDescription)
-            alert = LoginAlert(
-                   title: "Login failed",
-                   message: "Email və ya password yanlışdır."
-               )
         }
+    }
+    
+    private func validateFields() -> Bool {
+        fieldErrors.removeAll()
+        
+        if email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            fieldErrors[.email] = "Email is required."
+        } else if !email.contains("@") {
+            fieldErrors[.email] = "Enter a valid email."
+        }
+        
+        if password.isEmpty {
+            fieldErrors[.password] = "Password is required."
+        } else if password.count < 6 {
+            fieldErrors[.password] = "Password must contain at least 6 characters."
+        }
+        return fieldErrors.isEmpty
     }
 }

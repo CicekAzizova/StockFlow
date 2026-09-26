@@ -16,16 +16,18 @@ protocol NetworkService {
 final class DefaultNetworkService: NetworkService {
     
     private let session: URLSession
+    private let tokenStoring: TokenStoring
     
-    init(session: URLSession = .shared) {
+    init(session: URLSession = .shared, tokenStoring: TokenStoring) {
         self.session = session
+        self.tokenStoring = tokenStoring
     }
     
     func request<T: Decodable>(
         _ endpoint: Endpoint
     ) async throws -> T {
         
-        let request: URLRequest
+        var request: URLRequest
         
         do {
             request = try endpoint.makeRequest()
@@ -33,6 +35,14 @@ final class DefaultNetworkService: NetworkService {
             throw error
         } catch {
             throw NetworkError.unknown(error)
+        }
+        
+        
+        if endpoint.requiresAuthentication {
+            guard let token = try tokenStoring.readToken() else {
+                throw KeychainServiceError.missingToken
+            }
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         
         let data: Data
@@ -61,13 +71,15 @@ final class DefaultNetworkService: NetworkService {
             )
         }
         
+        
+        
         do {
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             
             return try decoder.decode(T.self, from: data)
         } catch {
-            throw NetworkError.decodingError
+            throw NetworkError.decodingError(error)
         }
     }
 }

@@ -16,7 +16,6 @@ struct CreateStoreView: View {
     @FocusState private var focusedField: FocusedField?
     
     var body: some View {
-       
             ZStack {
                 Color.background
                     .ignoresSafeArea()
@@ -43,12 +42,12 @@ struct CreateStoreView: View {
             ProgressView("Creating store...")
 
         case .loaded:
-            successView
+            Color.clear
 
         case .error(let message):
             createStoreScreen
                 .overlay(alignment: .top) {
-                    errorMessage(message)
+                    ErrorMessageView(message: message)
                 }
         }
     }
@@ -67,7 +66,6 @@ struct CreateStoreView: View {
             .scrollDismissesKeyboard(.interactively)
             
             createStoreButton
-                
         }
     }
 
@@ -200,49 +198,20 @@ struct CreateStoreView: View {
     var createStoreButton: some View {
         AppButtonView(
             title: "Create Store",
-            isLoading: viewModel.state.isLoading
+            isLoading: viewModel.state.isLoading, background: .brandPrimary
         ) {
             Task {
                 await viewModel.createStore()
                 
-                if case .loaded(_) = viewModel.state {
-                
-                            }
+                if case .loaded = viewModel.state {
+                    appStateManager.state = .authenticated
+                }
             }
-            
-            
         }
         .padding(.top, 32)
         .padding(.horizontal, 24)
         .padding(.bottom, 16)
         .background(Color.background)
-    }
-
-    // MARK: - Success View
-
-    var successView: some View {
-        VStack(spacing: 16) {
-
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 56))
-                .foregroundStyle(.green)
-
-            Text("Store created successfully!")
-                .font(.inter(.bold, size: 22))
-                .multilineTextAlignment(.center)
-        }
-        .padding(24)
-    }
-
-    // MARK: - Error Message
-
-    func errorMessage(_ message: String) -> some View {
-        Text(message)
-            .font(.inter(.regular, size: 14))
-            .foregroundStyle(.red)
-            .multilineTextAlignment(.center)
-            .padding(.horizontal, 24)
-            .padding(.top, 12)
     }
 }
 

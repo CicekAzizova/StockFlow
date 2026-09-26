@@ -7,6 +7,9 @@
 import SwiftUI
 
 struct OwnerTabView: View {
+    let dependencies: AppDependencies
+    let appStateManager: AppStateManager
+    
     var body: some View {
         TabView {
             Tab {
@@ -39,7 +42,10 @@ struct OwnerTabView: View {
             }
             Tab {
                 NavigationStack {
-                    Text("Profile")
+                    ProfileView(
+                        viewModel: dependencies.makeProfileViewModel(),
+                        appStateMenager: appStateManager
+                    )
                 }
             }label: {
                 Text("Profile")
@@ -52,5 +58,8 @@ struct OwnerTabView: View {
     }
 }
 #Preview {
-    OwnerTabView()
+    let dependencies = AppDependencies()
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+
+    OwnerTabView(dependencies: dependencies, appStateManager: appStateManager)
 }

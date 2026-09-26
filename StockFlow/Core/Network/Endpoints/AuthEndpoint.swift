@@ -25,6 +25,10 @@ enum AuthEndpoint: Endpoint {
         }
     }
     
+    var requiresAuthentication: Bool {
+        false
+    }
+    
     var httpBody: (any Encodable)? {
         switch self {
         case .login(let email, let password):

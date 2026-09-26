@@ -55,6 +55,7 @@ struct LoginView: View {
                 placeholder: "Owner",
                 icon: "envelope",
                 focusedField: .email,
+                errorMessage: viewModel.fieldErrors[.email],
                 textContentType: .emailAddress,
                 keyboardType: .emailAddress,
                 submitLabel: .next,
@@ -68,6 +69,7 @@ struct LoginView: View {
             AppSecureFieldView(
                 placeholder: "Password",
                 focusedField: .password,
+                errorMessage: viewModel.fieldErrors[.password],
                 submitLabel: .done,
                 onSubmit: {
                     Task {
@@ -79,10 +81,7 @@ struct LoginView: View {
             )
 
             if case .error(let message) = viewModel.state {
-                Text(message)
-                    .foregroundStyle(.red)
-                    .font(.inter(.regular, size: 14))
-                    .padding(.top, 12)
+                ErrorMessageView(message: message)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -93,7 +92,8 @@ struct LoginView: View {
     var signInButton: some View {
         AppButtonView(
             title: "Sign In",
-            isLoading: viewModel.state.isLoading
+
+            isLoading: viewModel.state.isLoading, background: .brandPrimary,
         ) {
             Task {
                 await viewModel.login()
@@ -102,6 +102,7 @@ struct LoginView: View {
                 }
             }
         }
+        
         .padding(.top, 50)
     }
 
@@ -162,7 +163,7 @@ struct LoginView: View {
 
         case .loaded:
             ProgressView()
-
+            
         case .error:
             loginScreen
         }

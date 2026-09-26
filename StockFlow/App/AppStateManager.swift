@@ -32,4 +32,14 @@ final class  AppStateManager {
             state = .unauthenticated
         }
     }
+    
+    func logout() {
+        do {
+            try tokenStorage.deleteToken()
+        } catch  {
+            print("Logout error: \(error.localizedDescription)")
+
+        }
+        state = .unauthenticated
+    }
 }

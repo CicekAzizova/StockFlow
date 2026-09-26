@@ -11,7 +11,9 @@ struct AppButtonView: View {
 
     let title: String
     var isLoading: Bool = false
+    var background: Color
     var action: () -> Void
+    
 
     var body: some View {
         Button {
@@ -29,7 +31,7 @@ struct AppButtonView: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 50)
-            .background(.brandPrimary)
+            .background(background)
             .clipShape(
                 RoundedRectangle(cornerRadius: 12)
             )

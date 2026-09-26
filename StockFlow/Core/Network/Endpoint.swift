@@ -13,11 +13,12 @@ protocol Endpoint {
     var method: HttpMethod { get }
     var queryItems: [URLQueryItem]? { get }
     var httpBody: Encodable? { get }
+    var requiresAuthentication: Bool { get }//token lazimdir  lazim deyil
 }
 
 extension Endpoint {
     var baseURL: String {
-        ""
+        "http://localhost:3000"
     }
     
     var headers: [String: String]? {
@@ -33,6 +34,10 @@ extension Endpoint {
     
     var httpBody: Encodable? {
         return nil
+    }
+    
+    var requiresAuthentication: Bool {
+        true
     }
 }
 

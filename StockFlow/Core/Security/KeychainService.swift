@@ -11,6 +11,7 @@ import Security
 enum KeychainServiceError: LocalizedError {
     case invalidData
     case unexpectedStatus(OSStatus)
+    case missingToken
 
     var errorDescription: String? {
         switch self {
@@ -18,6 +19,8 @@ enum KeychainServiceError: LocalizedError {
             return "The Keychain value is invalid."
         case .unexpectedStatus(let status):
             return "Keychain operation failed with status: \(status)."
+        case .missingToken:
+           return "Authentication token is missing."
         }
     }
 }
