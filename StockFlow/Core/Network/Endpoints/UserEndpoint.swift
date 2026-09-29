@@ -14,7 +14,7 @@ enum UserEndpoint: Endpoint {
     var path: String {
         switch self {
         case .getProfile:
-             "/users"
+             "/users/me"
         }
     }
     

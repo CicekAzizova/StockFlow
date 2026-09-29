@@ -13,7 +13,7 @@ import Observation
 final class LoginViewModel {
     private let authRepository: AuthRepository
     
-    var fieldErrors: [FocusedField: String] = [:]
+    var fieldErrors: [LoginFocusedField: String] = [:]
     
     init(authRepository: AuthRepository) {
         self.authRepository = authRepository

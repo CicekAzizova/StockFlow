@@ -12,7 +12,7 @@ import Foundation
 
 final class CreateStoreViewModel {
     
-    var state: StoreViewState = .idle
+    var state: CreateStoreViewState = .idle
     
     var name: String = ""
     var email: String = ""
@@ -22,7 +22,7 @@ final class CreateStoreViewModel {
     var storePhone: String = ""
     var storeAddress: String = ""
     
-    var fieldErrors: [FocusedField: String] = [:]
+    var fieldErrors: [CreateStoreFocusedField: String] = [:]
     
     private let storeRepository: StoreRepository
     
@@ -46,7 +46,7 @@ final class CreateStoreViewModel {
                 storeAddress: storeAddress,
                 storePhone: storePhone
             )
-            state = .loaded(result)
+            state = .success(result)
         } catch  {
             state = .error(error.localizedDescription)
         }

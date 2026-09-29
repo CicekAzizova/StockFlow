@@ -9,8 +9,15 @@ import Foundation
 struct User: Decodable {
     let id: Int
     let email: String
-    let firstName: String
-    let lastName: String
+    let name: String
     let role: UserRole
-    let storeId: Int
+    let storeName: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case email
+        case name
+        case role
+        case storeName = "store_name"
+    }
 }

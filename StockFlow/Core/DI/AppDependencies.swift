@@ -18,28 +18,35 @@ final class AppDependencies {
     let userService: UserService
     let userRepository: UserRepository
     
+    let productService: ProductService
+    let productRepository: ProductRepository
+    
 
     init() {
         let tokenStorage = KeychainWrapper()
         let networkService = DefaultNetworkService(tokenStoring: tokenStorage)
 
-        let authService = MockAuthService()
+        let authService = DefaultAuthService(networkService: networkService)
         let authRepository = DefaultAuthRepository(
             authService: authService,
             tokenStorage: tokenStorage
         )
 
-        let storeService = MockStoreService()
+        let storeService = DefaultStoreService(networkService: networkService )
         let storeRepository = DefaultStoreRepository(
             storeService: storeService,
             tokenStorage: tokenStorage
         )
         
-        let userService = MockUserService()
+        let userService = DefaultUserService(networkService: networkService)
         let userRepository = DefaultUserRepository(
             userService: userService,
             tokenStorage: tokenStorage
+            
         )
+        
+        let productService = DefaultProductService(networkService: networkService)
+        let productRepository = DefaultProductRepository(productService: productService)
 
         self.tokenStorage = tokenStorage
         self.networkService = networkService
@@ -52,6 +59,9 @@ final class AppDependencies {
         
         self.userService = userService
         self.userRepository = userRepository
+        
+        self.productService = productService
+        self.productRepository = productRepository
     }
 
     @MainActor
@@ -71,5 +81,15 @@ final class AppDependencies {
     @MainActor
     func makeProfileViewModel() -> ProfileViewModel {
         ProfileViewModel(userRepository: userRepository)
+    }
+    
+    @MainActor
+    func makeAddProductViewModel() -> AddProductViewModel {
+        AddProductViewModel(productRepository: productRepository)
+    }
+    
+    @MainActor
+    func makeProductViewModel() -> ProductViewModel {
+        ProductViewModel(productRepository: productRepository)
     }
 }

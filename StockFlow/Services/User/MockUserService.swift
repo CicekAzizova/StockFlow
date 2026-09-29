@@ -12,11 +12,10 @@ final class MockUserService: UserService {
     func getUser() async throws -> User {
         User(
             id: 1,
-            email: "cicek.azizova@gmail.com",
-            firstName: "Cicek",
-            lastName: "Azizova",
+            email: "aruz@gmail.com",
+            name: "Aruz",
             role: .owner,
-            storeId: 1
+            storeName: "Mobil"
         )
     }
 }

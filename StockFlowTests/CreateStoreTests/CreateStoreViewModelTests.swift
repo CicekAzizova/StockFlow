@@ -24,7 +24,8 @@ struct CreateStoreViewModelTests {
                 storeName: "xSpace",
                 storeAddress: "Asdress",
                 storePhone: "055",
-                createdAt: "0"
+                createdAt: "0",
+                token: "token"
             )
         )
         )
@@ -42,7 +43,7 @@ struct CreateStoreViewModelTests {
         await viewModel.createStore()
         
         // Then
-        guard case .loaded(let store) = viewModel.state else {
+        guard case .success(let store) = viewModel.state else {
             Issue.record("Expected loaded state")
             return
         }
@@ -93,7 +94,8 @@ struct CreateStoreViewModelTests {
                 storeName: "xSpace",
                 storeAddress: "Asdress",
                 storePhone: "055",
-                createdAt: "0"
+                createdAt: "0",
+                token: "token"
             )
         )
         )

@@ -7,24 +7,14 @@
 
 import SwiftUI
 
-enum FocusedField: Hashable, CaseIterable {
-    case name
-    case email
-    case password
-    case phone
-    case storeName
-    case storeAddress
-    case storePhone
-}
-
-struct AppTextFieldView: View {
+struct AppTextFieldView<FocusedField: Hashable>: View {
 
     let title: String
     let placeholder: String
     let icon: String?
     let focusedField: FocusedField
+    
     var errorMessage: String? = nil
-
     var textContentType: UITextContentType? = nil
     var keyboardType: UIKeyboardType = .default
     var submitLabel: SubmitLabel = .next

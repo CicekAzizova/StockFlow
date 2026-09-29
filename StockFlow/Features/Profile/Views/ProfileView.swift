@@ -9,13 +9,24 @@ import SwiftUI
 
 struct ProfileView: View {
     @State var viewModel: ProfileViewModel
-    let appStateMenager: AppStateManager
+     let appStateMenager: AppStateManager
     
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            content
-                .padding(12)
+            VStack {
+                content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                AppButtonView(
+                    title: "Log Out",
+                    background: .red
+                ) {
+                    appStateMenager.logout()
+                }
+                .padding(.horizontal, 12)
+                .padding(.bottom, 12)
+               }
             }
         .navigationTitle("Profile")
         .task {
@@ -24,7 +35,7 @@ struct ProfileView: View {
     }
     
     @ViewBuilder
-    func profileView(user: User) -> some View {
+    private func profileView(user: User) -> some View {
         ScrollView {
             VStack(spacing: 16) {
                 ProfileHeaderView(user: user)
@@ -33,21 +44,21 @@ struct ProfileView: View {
                     
                     ProfileInfoCardView(
                         title: "Full Name",
-                        subTitle: "Cicek Azizova",
+                        subTitle: user.name,
                         icon: "person",
                         showDivider: true,
                         
                     )
                     ProfileInfoCardView(
                         title: "Email",
-                        subTitle: "Cicek Azizova",
+                        subTitle: user.email,
                         icon: "person",
                         showDivider: true,
                         
                     )
                     ProfileInfoCardView(
                         title: "Store",
-                        subTitle: "Cicek Azizova",
+                        subTitle: user.storeName ?? "Test",
                         icon: "person",
                         showDivider: false
                     )
@@ -57,9 +68,6 @@ struct ProfileView: View {
                 
                 Spacer()
                 
-                AppButtonView(title: "Log Out", background: .red) {
-                    appStateMenager.logout()
-                }
             }
         }
     }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AppSecureFieldView: View {
+struct AppSecureFieldView<FocusedField: Hashable>: View {
     
     let placeholder: String
     let focusedField: FocusedField
@@ -17,7 +17,7 @@ struct AppSecureFieldView: View {
     
     @Binding var text: String
     
-    var focusedFieldBinding: FocusState<FocusedField?>.Binding
+    var focusedFieldBinding: FocusState<FocusedField?>.Binding//focsun hansinda oldugunu oxuyur
     
     @State private var isAppear = false
     

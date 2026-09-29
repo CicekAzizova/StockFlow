@@ -15,7 +15,7 @@ struct LoginView: View {
     let dependencies: AppDependencies
     let appStateManager: AppStateManager
 
-    @FocusState private var focusedField: FocusedField?
+    @FocusState private var focusedField: CreateStoreFocusedField?
 
     var body: some View {
         NavigationStack {

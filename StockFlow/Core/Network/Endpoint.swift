@@ -64,8 +64,9 @@ extension Endpoint {
         
         if let httpBody {
             do {
-                request.httpBody = try JSONEncoder().encode(httpBody)
-            } catch  {
+                let encodedBody = try JSONEncoder().encode(httpBody)
+                request.httpBody = encodedBody
+            } catch {
                 throw NetworkError.encodingError
             }
         }

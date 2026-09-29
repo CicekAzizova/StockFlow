@@ -16,12 +16,12 @@ struct ProfileHeaderView: View {
                 Circle()
                     .frame(width: 60, height: 60)
                     .foregroundStyle(.brandPrimary.opacity(0.3))
-                Text("\(user.firstName.prefix(1).uppercased())\(user.lastName.prefix(1).uppercased())")
+                Text("\(user.name.prefix(1).uppercased())")
                     .foregroundStyle(.brandPrimaryPressed)
                     .font(.inter(.bold, size: 24))
             }
             VStack(alignment: .leading) {
-                Text("\(user.firstName) \(user.lastName)")
+                Text("\(user.name)")
                     .font(.inter(.bold, size: 24))
                 Text(user.role.rawValue)
                     .foregroundStyle(.brandPrimary)

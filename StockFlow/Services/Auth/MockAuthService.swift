@@ -32,11 +32,10 @@ final class MockAuthService: AuthService {
 
         let user = User(
             id: 1,
-            email: email,
-            firstName: "Cicek",
-            lastName: "Owner",
+            email: "aruz@gmail.com",
+            name: "Aruz",
             role: .owner,
-            storeId: 1
+            storeName: "Mobil"
         )
 
         return LoginResponse(

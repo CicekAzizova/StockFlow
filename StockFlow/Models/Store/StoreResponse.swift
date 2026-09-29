@@ -8,7 +8,7 @@
 import Foundation
 
 struct StoreResponse: Decodable {
-
+    
     let id: Int
     let name: String
     let email: String
@@ -19,4 +19,15 @@ struct StoreResponse: Decodable {
     let createdAt: String
     let token: String
     
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case email
+        case phone
+        case storeName = "store_name"
+        case storeAddress = "store_address"
+        case storePhone = "store_phone"
+        case createdAt = "created_at"
+        case token
+    }
 }

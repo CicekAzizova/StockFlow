@@ -13,7 +13,7 @@ struct CreateStoreView: View {
     let appStateManager: AppStateManager
 
 
-    @FocusState private var focusedField: FocusedField?
+    @FocusState private var focusedField: CreateStoreFocusedField?
     
     var body: some View {
             ZStack {
@@ -41,7 +41,7 @@ struct CreateStoreView: View {
         case .loading:
             ProgressView("Creating store...")
 
-        case .loaded:
+        case .success:
             Color.clear
 
         case .error(let message):
@@ -203,7 +203,7 @@ struct CreateStoreView: View {
             Task {
                 await viewModel.createStore()
                 
-                if case .loaded = viewModel.state {
+                if case .success = viewModel.state {
                     appStateManager.state = .authenticated
                 }
             }

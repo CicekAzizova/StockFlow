@@ -32,6 +32,9 @@ enum StoreEndpoint: Endpoint {
                 .post
         }
     }
+    var requiresAuthentication: Bool {
+        false
+    }
     
     var httpBody: (any Encodable)? {
         switch self {

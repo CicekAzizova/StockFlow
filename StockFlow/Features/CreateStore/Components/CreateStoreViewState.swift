@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum StoreViewState {
+enum CreateStoreViewState {
     case idle
     case loading
-    case loaded(StoreResponse)
+    case success(StoreResponse)
     case error(String)
     
     var isLoading: Bool {
