@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ProductResponse: Decodable {
+struct ProductResponse: Decodable, Identifiable, Hashable {
     let id: Int
     let name: String
     let sku: String
@@ -18,7 +18,7 @@ struct ProductResponse: Decodable {
     let costPrice: Double
     let quantity: Int
     let lowStockLimit: Int
-    let imageUrl: String?
+    let imageUrls: [String]?
     let createdAt: String
     
     enum CodingKeys: String, CodingKey {
@@ -26,6 +26,18 @@ struct ProductResponse: Decodable {
         case costPrice = "cost_price"
         case lowStockLimit = "low_stock_limit"
         case createdAt = "created_at"
-        case imageUrl = "image_url"
+        case imageUrls = "image_urls"
+    }
+}
+
+extension ProductResponse {
+    var stockStatus: StockStatus {
+        if quantity == 0 {
+            return .outOfStock
+        } else if quantity <= lowStockLimit {
+            return .lowStock
+        } else {
+            return .inStock
+        }
     }
 }

@@ -13,6 +13,7 @@ struct CreateStoreView: View {
     let appStateManager: AppStateManager
 
 
+
     @FocusState private var focusedField: CreateStoreFocusedField?
     
     var body: some View {
@@ -219,10 +220,11 @@ struct CreateStoreView: View {
 
 #Preview {
     let dependencies = AppDependencies()
-    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
 
 
     CreateStoreView(
         viewModel: dependencies.makeCreateStoreViewModel(), appStateManager: appStateManager
     )
+ 
 }

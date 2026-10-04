@@ -23,8 +23,8 @@ final class ProfileViewModel {
         state = .loading
         
         do {
-           let result = try await userRepository.getUser()
-            state = .loaded(result)
+           let response = try await userRepository.getUser()
+            state = .loaded(response)
         } catch let error  {
             state = .error(error.localizedDescription)
         }

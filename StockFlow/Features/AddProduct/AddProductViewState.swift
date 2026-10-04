@@ -12,7 +12,7 @@ enum AddProductViewState {
     case success(ProductResponse)
     case error(String)
     
-    var isLoading: Bool { //view-da request gedərkən loading göstərmek ucun
+    var isLoading: Bool {
         if case .loading = self {
             return true
         }

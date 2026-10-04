@@ -11,6 +11,8 @@ protocol NetworkService {
     func request<T: Decodable>(
         _ endpoint: Endpoint
     ) async throws -> T
+    
+    func requestVoid(_ endpoint: Endpoint) async throws
 }
 
 final class DefaultNetworkService: NetworkService {
@@ -72,13 +74,59 @@ final class DefaultNetworkService: NetworkService {
             )
         }
         
-        
-        
         do {
             let decoder = JSONDecoder()            
             return try decoder.decode(T.self, from: data)
         } catch {
             throw NetworkError.decodingError(error)
+        }
+    }
+    
+    func requestVoid(_ endpoint: Endpoint) async throws {
+        var request: URLRequest
+
+        do {
+            request = try endpoint.makeRequest()
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.unknown(error)
+        }
+
+        if endpoint.requiresAuthentication {
+            guard let token = try tokenStoring.readToken() else {
+                throw KeychainServiceError.missingToken
+            }
+
+            request.setValue(
+                "Bearer \(token)",
+                forHTTPHeaderField: "Authorization"
+            )
+        }
+
+        let response: URLResponse
+
+        do {
+            (_, response) = try await session.data(for: request)
+        } catch {
+            throw NetworkError.unknown(error)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse
+        }
+
+        switch httpResponse.statusCode {
+        case 200...299:
+            return
+
+        case 401:
+            throw NetworkError.unauthorized
+
+        default:
+            throw NetworkError.serverError(
+                statusCode: httpResponse.statusCode
+            )
         }
     }
 }

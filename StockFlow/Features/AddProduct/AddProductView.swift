@@ -5,57 +5,92 @@
 //  Created by Cicek on 27.09.26.
 //
 
+
 import SwiftUI
 import PhotosUI
 
 struct AddProductView: View {
-    
-    @State var viewModel: AddProductViewModel
-    
+
+    @State private var viewModel: AddProductViewModel
+
     @FocusState private var focusField: AddProductFocusedField?
-    
+
     @Binding var selectionItems: [PhotosPickerItem]
     @Binding var selectedImages: [UIImage]
-    
     @Binding var path: NavigationPath
-    
+
+    let product: ProductResponse?
+
+    private var isEditMode: Bool {
+        viewModel.product != nil
+    }
+
+    init(
+        viewModel: AddProductViewModel,
+        selectionItems: Binding<[PhotosPickerItem]>,
+        selectedImages: Binding<[UIImage]>,
+        path: Binding<NavigationPath>
+    ) {
+        self._viewModel = State(initialValue: viewModel)
+        self.product = viewModel.product
+        self._selectionItems = selectionItems
+        self._selectedImages = selectedImages
+        self._path = path
+    }
+
     var body: some View {
         ZStack {
             Color.background
                 .ignoresSafeArea()
+
             content
-            
         }
-        .navigationTitle("Add Products")
+        .navigationTitle(isEditMode ? "Edit Product" : "Add Product")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
-    var addProductScreen: some View {
+
+    // MARK: - Add Product Screen
+
+    private var addProductScreen: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
                 header
-                AddProductImageView(selectionItems: $selectionItems,selectedImages: $selectedImages)
+
+                AddProductImageView(
+                    selectionItems: $selectionItems,
+                    selectedImages: $selectedImages
+                )
+
                 form
+
                 addProductButton
             }
-            .padding(.horizontal,24)
+            .padding(.horizontal, 24)
         }
     }
-    
-    var header: some View {
-        VStack(alignment: .leading){
-            Text("Product information")
+
+    // MARK: - Header
+
+    private var header: some View {
+        VStack(alignment: .leading) {
+            Text(isEditMode ? "Edit product information" : "Product information")
                 .font(.inter(.regular, size: 20))
-            Text("This same form is used when editing a product.")
-                .font(.inter(.regular, size: 13))
+
+            Text(
+                isEditMode
+                ? "Update the details of your product."
+                : "Enter the details of your new product."
+            )
+            .font(.inter(.regular, size: 13))
         }
         .padding(.bottom, 16)
     }
-        
-    
+
+    // MARK: - Form
+
     @ViewBuilder
-    var form: some View {
-        
+    private var form: some View {
+
         AppTextFieldView(
             title: "Product name",
             placeholder: "Enter Product name",
@@ -68,7 +103,7 @@ struct AddProductView: View {
             text: $viewModel.name,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "SKU",
             placeholder: "Enter unique SKU",
@@ -81,7 +116,7 @@ struct AddProductView: View {
             text: $viewModel.sku,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Category",
             placeholder: "Enter product category",
@@ -94,7 +129,7 @@ struct AddProductView: View {
             text: $viewModel.category,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Description",
             placeholder: "Enter product description",
@@ -107,7 +142,7 @@ struct AddProductView: View {
             text: $viewModel.description,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Price",
             placeholder: "Enter product price",
@@ -121,12 +156,13 @@ struct AddProductView: View {
             text: $viewModel.price,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Discount",
             placeholder: "Enter discount",
             icon: nil,
             focusedField: .discount,
+            keyboardType: .decimalPad,
             submitLabel: .next,
             onSubmit: {
                 focusField = .costPrice
@@ -134,12 +170,13 @@ struct AddProductView: View {
             text: $viewModel.discount,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Cost price",
             placeholder: "Enter cost price",
             icon: nil,
             focusedField: .costPrice,
+            keyboardType: .decimalPad,
             submitLabel: .next,
             onSubmit: {
                 focusField = .quantity
@@ -147,7 +184,7 @@ struct AddProductView: View {
             text: $viewModel.costPrice,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Quantity",
             placeholder: "Enter quantity",
@@ -161,12 +198,13 @@ struct AddProductView: View {
             text: $viewModel.quantity,
             focusedFieldBinding: $focusField
         )
-        
+
         AppTextFieldView(
             title: "Low stock limit",
             placeholder: "Enter low stock limit",
             icon: nil,
             focusedField: .lowStockLimit,
+            keyboardType: .numberPad,
             submitLabel: .done,
             onSubmit: {
                 focusField = nil
@@ -175,58 +213,87 @@ struct AddProductView: View {
             focusedFieldBinding: $focusField
         )
     }
-    
-    var addProductButton: some View {
-        VStack {
+
+    // MARK: - Add / Save Button
+
+    private var addProductButton: some View {
+        VStack(spacing: 8) {
+
             if let message = viewModel.validationMessage {
                 Text(message)
                     .font(.inter(.regular, size: 13))
                     .foregroundStyle(.error)
+                    .multilineTextAlignment(.center)
             }
-            AppButtonView(
-                title: "Add Product",
-                isLoading: viewModel.state.isLoading,
-                background: .brandPrimary) {
-                    Task {
-                        await viewModel.createProduct()
-                        
-                        if case .success = viewModel.state {
-                            selectionItems = []
-                            selectedImages = []
-                            
-                            if !path.isEmpty {
-                                path.removeLast()
-                            }
-                        }
-                    }
-                }
-            if case .error = viewModel.state {
-                Text("Something went wrong. Please try again.")
+
+            if case .error(let message) = viewModel.state {
+                Text(message)
                     .font(.inter(.regular, size: 13))
                     .foregroundStyle(.error)
+                    .multilineTextAlignment(.center)
+            }
+
+            AppButtonView(
+                title: isEditMode ? "Save Product" : "Add Product",
+                isLoading: viewModel.state.isLoading,
+                background: .brandPrimary
+            ) {
+                Task {
+                    await submitProduct()
+                }
             }
         }
-            .padding(.top, 16)
+        .padding(.top, 16)
     }
-    
+
+    // MARK: - Submit Product
+
+    @MainActor
+    private func submitProduct() async {
+        viewModel.validationMessage = nil
+
+        var imageData: [Data] = []
+
+        for item in selectionItems {
+            do {
+                guard let data = try await item.loadTransferable(type: Data.self) else {
+                    viewModel.validationMessage = "Unable to load selected image."
+                    return
+                }
+
+                imageData.append(data)
+
+            } catch {
+                viewModel.validationMessage = "Failed to load selected image."
+                return
+            }
+        }
+
+        await viewModel.saveProduct(images: imageData)
+
+        if case .success = viewModel.state {
+            selectionItems = []
+            selectedImages = []
+
+            if !path.isEmpty {
+                path.removeLast()
+            }
+        }
+    }
+
+    // MARK: - Content State
+
     @ViewBuilder
-    var content: some View {
+    private var content: some View {
         switch viewModel.state {
-        case .idle:
+        case .idle, .loading:
             addProductScreen
-        case .loading:
-            ProgressView("Adding Product...")
+
         case .success:
             Color.clear
-                
-            
+
         case .error:
             addProductScreen
         }
     }
 }
-//#Preview {
-//    NavigationStack {
-//        AddProductView()
-//    }
-//}

@@ -12,6 +12,8 @@ enum ProductsEndpoint: Endpoint {
     case createProduct(ProductRequest)
     case getProducts
     case search(query: String)
+    case editProduct(id: Int, request: ProductRequest)
+    case deleteProduct(id: Int)
     
     var path: String {
         switch self {
@@ -21,6 +23,10 @@ enum ProductsEndpoint: Endpoint {
             "/products"
         case .search:
             "/products"
+        case .editProduct(let id,_):
+            "/products/\(id)"
+        case .deleteProduct(id: let id):
+            "/products/\(id)"
         }
     }
     
@@ -32,6 +38,10 @@ enum ProductsEndpoint: Endpoint {
                 .get
         case .search:
                 .get
+        case .editProduct:
+                .put
+        case .deleteProduct:
+                .delete
         }
     }
     
@@ -42,11 +52,15 @@ enum ProductsEndpoint: Endpoint {
     var httpBody: (any Encodable)? {
         switch self {
         case .createProduct(let request):
-            request
+            return request
         case .getProducts:
-            nil
+            return nil
         case .search:
-            nil
+            return nil
+        case .editProduct(_, let request):
+            return request
+        case .deleteProduct:
+            return nil
         }
     }
     
@@ -58,7 +72,10 @@ enum ProductsEndpoint: Endpoint {
             return nil
         case .search(let query):
             return [URLQueryItem(name: "query", value: query)]
+        case .editProduct:
+            return nil
+        case .deleteProduct:
+            return nil
         }
     }
-    
 }

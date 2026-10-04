@@ -10,8 +10,8 @@ import SwiftUI
 
 struct AppRouter: View {
     
-    @State var appStateManager: AppStateManager
     var dependencies: AppDependencies
+    let appStateManager: AppStateManager
     
     var body: some View {
          content
@@ -23,9 +23,14 @@ struct AppRouter: View {
         case .loading:
             ProgressView()
         case .unauthenticated:
-            LoginView(viewModel: dependencies.makeLoginViewModel(), dependencies: dependencies, appStateManager: appStateManager)
+            LoginView(viewModel: dependencies.makeLoginViewModel(appStateManager: appStateManager), dependencies: dependencies, appStateManager: appStateManager)
         case .authenticated:
-            OwnerTabView(dependencies: dependencies, appStateManager: appStateManager)
+                OwnerTabView(
+                    dependencies: dependencies,
+                    appStateManager: appStateManager,
+                    user: appStateManager.user
+                )
+           
         }
     }
 }

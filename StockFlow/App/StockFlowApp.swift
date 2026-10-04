@@ -10,21 +10,24 @@ import SwiftUI
 @main
 struct StockFlowApp: App {
     let dependencies: AppDependencies
-    let appStateMenager: AppStateManager
+    
+    @State private var appStateManager: AppStateManager
     
     init() {
         let dependencies = AppDependencies()
         self.dependencies = dependencies
         
-        let appStateMenager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+        let appStateMenager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
         
-        appStateMenager.readToken()
-        
-        self.appStateMenager = appStateMenager
+        _appStateManager = State(initialValue: appStateMenager) //_appStateManager ozune muraciet edir // evvelceden StockFlowwAppde yaradilmis AppStateMenager bura otururuk
     }
     var body: some Scene {
         WindowGroup {
-            AppRouter(appStateManager: appStateMenager, dependencies: dependencies)
+            AppRouter(dependencies: dependencies, appStateManager: appStateManager)
+                .task {
+                    await appStateManager.readToken()
+                }
         }
+        
     }
 }

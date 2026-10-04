@@ -11,23 +11,37 @@ import Observation
 @Observable
 final class  AppStateManager {
     var state: AppState = .loading
+    var user: User?
     
     private let tokenStorage: TokenStoring
+    private let userRepository: UserRepository
     
-    init(tokenStorage: TokenStoring) {
+    init(
+        tokenStorage: TokenStoring,
+        userRepository: UserRepository
+    ) {
         self.tokenStorage = tokenStorage
+        self.userRepository = userRepository
     }
     
-    func readToken() {
+    func setUser(_ user: User) {
+        self.user = user
+        state = .authenticated
+    }
+    
+    func readToken() async {
         state = .loading
         do {
             let token = try  tokenStorage.readToken()
             
-            if let token , !token.isEmpty {
-                state = .authenticated
-            }else {
+            guard let token , !token.isEmpty else {
+                user = nil
                 state = .unauthenticated
+                return
             }
+            let currentUser = try await userRepository.getUser()
+            setUser(currentUser)
+            
         } catch  {
             state = .unauthenticated
         }
@@ -38,7 +52,6 @@ final class  AppStateManager {
             try tokenStorage.deleteToken()
         } catch  {
             print("Logout error: \(error.localizedDescription)")
-
         }
         state = .unauthenticated
     }

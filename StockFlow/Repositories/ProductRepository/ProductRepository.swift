@@ -10,6 +10,8 @@ protocol ProductRepository {
     func createProduct(_ request: ProductRequest) async throws -> ProductResponse
     func getProducts() async throws -> [ProductResponse]
     func searchProducts(_ query: String) async throws -> [ProductResponse]
+    func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse
+    func deleteProduct(id: Int) async throws
 }
 
 final class DefaultProductRepository: ProductRepository {
@@ -31,5 +33,13 @@ final class DefaultProductRepository: ProductRepository {
     func searchProducts(_ query: String) async throws -> [ProductResponse] {
         try await productService.searchProducts(query)
        
+    }
+    
+    func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse {
+        try await productService.updateProduct(id: id, request: request)
+    }
+    
+    func deleteProduct(id: Int) async throws  {
+        try await productService.deleteProduct(id: id)
     }
 }

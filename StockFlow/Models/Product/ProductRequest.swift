@@ -17,12 +17,12 @@ struct ProductRequest: Encodable {
     let costPrice: Double
     let quantity: Int
     let lowStockLimit: Int
-    let imageUrl: String?
+    let imageUrls: [String]?
     
     enum CodingKeys: String, CodingKey {
         case name, sku, category,description, price, discount, quantity
         case costPrice = "cost_price"
         case lowStockLimit = "low_stock_limit"
-        case imageUrl = "image_url"
+        case imageUrls = "image_urls"
     }
 }

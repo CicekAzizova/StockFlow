@@ -11,9 +11,10 @@ import SwiftUI
 struct LoginView: View {
 
     @State var viewModel: LoginViewModel
-    
+
     let dependencies: AppDependencies
     let appStateManager: AppStateManager
+
 
     @FocusState private var focusedField: CreateStoreFocusedField?
 
@@ -73,7 +74,7 @@ struct LoginView: View {
                 submitLabel: .done,
                 onSubmit: {
                     Task {
-                        await viewModel.login()
+                        await performLogin()
                     }
                 },
                 text: $viewModel.password,
@@ -87,7 +88,7 @@ struct LoginView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - Sign In Button
+
 
     var signInButton: some View {
         AppButtonView(
@@ -96,17 +97,11 @@ struct LoginView: View {
             isLoading: viewModel.state.isLoading, background: .brandPrimary,
         ) {
             Task {
-                await viewModel.login()
-                if case .loaded(_) = viewModel.state {
-                    appStateManager.state = .authenticated
-                }
+                await performLogin()
             }
         }
-        
         .padding(.top, 50)
     }
-
-    // MARK: - Footer
 
     var footer: some View {
         VStack(alignment: .center) {
@@ -135,7 +130,6 @@ struct LoginView: View {
         }
     }
 
-    // MARK: - Login Screen
 
     var loginScreen: some View {
         VStack {
@@ -149,7 +143,14 @@ struct LoginView: View {
         }
     }
 
-    // MARK: - Content
+    @MainActor
+    private func performLogin() async {
+        await viewModel.login()
+
+        if case .loaded(_) = viewModel.state {
+            appStateManager.state = .authenticated
+        }
+    }
 
     @ViewBuilder
     var content: some View {
@@ -174,24 +175,26 @@ struct LoginView: View {
 
 #Preview("Idle State") {
     let dependencies = AppDependencies()
-    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
 
 
     LoginView(
-        viewModel: dependencies.makeLoginViewModel(),
+        viewModel: dependencies.makeLoginViewModel(appStateManager: appStateManager),
         dependencies: dependencies, appStateManager: appStateManager
     )
+   
 }
 
 #Preview("Error State") {
     let dependencies = AppDependencies()
-    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage)
+    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
 
-    let viewModel = dependencies.makeLoginViewModel()
+    let viewModel = dependencies.makeLoginViewModel(appStateManager: appStateManager)
 
     viewModel.state = .error(
         "Email və ya password yanlışdır."
     )
 
-    return LoginView(viewModel: viewModel, dependencies: dependencies, appStateManager: appStateManager)
+   return LoginView(viewModel: viewModel, dependencies: dependencies, appStateManager: appStateManager)
+       
 }

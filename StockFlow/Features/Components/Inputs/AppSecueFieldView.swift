@@ -10,7 +10,7 @@ import SwiftUI
 struct AppSecureFieldView<FocusedField: Hashable>: View {
     
     let placeholder: String
-    let focusedField: FocusedField
+    let focusedField: FocusedField?
     var errorMessage: String? = nil
     var submitLabel: SubmitLabel = .done
     var onSubmit: (() -> Void)? = nil

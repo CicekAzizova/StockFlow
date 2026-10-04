@@ -37,7 +37,7 @@ final class CreateStoreViewModel {
         
         state = .loading
         do {
-            let result = try await storeRepository.createStore(
+            let response = try await storeRepository.createStore(
                 name: name,
                 email: email,
                 password: password,
@@ -46,7 +46,7 @@ final class CreateStoreViewModel {
                 storeAddress: storeAddress,
                 storePhone: storePhone
             )
-            state = .success(result)
+            state = .success(response)
         } catch  {
             state = .error(error.localizedDescription)
         }

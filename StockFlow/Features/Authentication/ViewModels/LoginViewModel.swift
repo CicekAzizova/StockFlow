@@ -12,11 +12,16 @@ import Observation
 @Observable
 final class LoginViewModel {
     private let authRepository: AuthRepository
+    private let appStateManager: AppStateManager
+
     
     var fieldErrors: [LoginFocusedField: String] = [:]
     
-    init(authRepository: AuthRepository) {
+    init(authRepository: AuthRepository,
+         appStateManager: AppStateManager) {
         self.authRepository = authRepository
+        self.appStateManager = appStateManager
+
     }
     
     var state: LoginViewState = .idle
@@ -30,9 +35,11 @@ final class LoginViewModel {
         
         state = .loading
         do {
-            let result = try await authRepository.login(email: email, password: password)
+            let response = try await authRepository.login(email: email, password: password)
             
-            state = .loaded(result.user)
+            appStateManager.setUser(response.user)
+
+            state = .loaded(response.user)
             
         } catch let error  {
             state = .error(error.localizedDescription)

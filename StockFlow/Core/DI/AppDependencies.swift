@@ -4,6 +4,8 @@
 //
 //  Created by Cicek on 21.09.26.
 //
+
+
 final class AppDependencies {
     let networkService: NetworkService
     
@@ -20,6 +22,8 @@ final class AppDependencies {
     
     let productService: ProductService
     let productRepository: ProductRepository
+    
+    let productsStore: ProductsStore
     
 
     init() {
@@ -47,6 +51,8 @@ final class AppDependencies {
         
         let productService = DefaultProductService(networkService: networkService)
         let productRepository = DefaultProductRepository(productService: productService)
+        
+        let productsStore = ProductsStore(productRepository: productRepository)
 
         self.tokenStorage = tokenStorage
         self.networkService = networkService
@@ -62,12 +68,14 @@ final class AppDependencies {
         
         self.productService = productService
         self.productRepository = productRepository
+        
+        self.productsStore = productsStore
     }
 
     @MainActor
-    func makeLoginViewModel() -> LoginViewModel {
+    func makeLoginViewModel(    appStateManager: AppStateManager) -> LoginViewModel {
         LoginViewModel(
-            authRepository: authRepository
+            authRepository: authRepository, appStateManager: appStateManager
         )
     }
 
@@ -84,12 +92,27 @@ final class AppDependencies {
     }
     
     @MainActor
-    func makeAddProductViewModel() -> AddProductViewModel {
-        AddProductViewModel(productRepository: productRepository)
+    func makeAddProductViewModel(product: ProductResponse? = nil) -> AddProductViewModel {
+        AddProductViewModel(
+            productStore: productsStore,
+            product: product, tokenStorage: tokenStorage
+        )
     }
     
     @MainActor
     func makeProductViewModel() -> ProductViewModel {
-        ProductViewModel(productRepository: productRepository)
+        ProductViewModel(productStore: productsStore)
+    }
+    
+    @MainActor
+    func makeProductDetailViewModel(product: ProductResponse) -> ProductDetailViewModel {
+        ProductDetailViewModel(productStore: productsStore, product: product)
+    }
+    
+    @MainActor
+    func makeOwnerDashboardViewModel() -> OwnerDashboardViewModel {
+        OwnerDashboardViewModel(
+            productStore: productsStore
+        )
     }
 }

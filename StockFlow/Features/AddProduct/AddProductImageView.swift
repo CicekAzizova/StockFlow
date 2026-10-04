@@ -38,7 +38,6 @@ struct AddProductImageView: View {
                                     RoundedRectangle(cornerRadius: 12)
                                 )
 
-                            // Remove image button
                             Button {
                                 selectedImages.remove(at: index)
                                 selectionItems.remove(at: index)
@@ -51,7 +50,6 @@ struct AddProductImageView: View {
                         }
                     }
 
-                    // Add images button
                     if selectionItems.count < 5 {
 
                         PhotosPicker(
@@ -92,8 +90,6 @@ struct AddProductImageView: View {
             }
         }
         .onChange(of: selectionItems) { _, newItems in
-            print("PhotosPicker changed!")
-            print("New items count:", newItems.count)
 
             Task {
                 var loadedImages: [UIImage] = []
@@ -107,8 +103,6 @@ struct AddProductImageView: View {
 
                 await MainActor.run {
                     selectedImages = loadedImages
-
-                    print("Loaded images count:", selectedImages.count)
                 }
             }
         }

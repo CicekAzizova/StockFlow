@@ -11,11 +11,13 @@ protocol ProductService {
     func createProduct(_ request: ProductRequest) async throws -> ProductResponse
     func getProducts() async throws -> [ProductResponse]
     func searchProducts(_ query: String) async throws -> [ProductResponse]
+    func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse
+    func deleteProduct(id: Int) async throws
 }
 
 
 final class DefaultProductService: ProductService {
-    
+  
     private let networkService: NetworkService
     
     init(networkService: NetworkService) {
@@ -33,6 +35,13 @@ final class DefaultProductService: ProductService {
     func searchProducts(_ query: String) async throws -> [ProductResponse] {
         try await networkService.request(ProductsEndpoint.search(query: query))
     }
-   
+    
+    func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse {
+        try await networkService.request(ProductsEndpoint.editProduct(id: id, request: request))
+    }
+    
+    func deleteProduct(id: Int) async throws  {
+        try await networkService.requestVoid(ProductsEndpoint.deleteProduct(id: id))
+    }
 }
 

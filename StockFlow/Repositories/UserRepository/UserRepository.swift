@@ -9,7 +9,6 @@ import Foundation
 
 protocol UserRepository {
     func getUser() async throws -> User
-    func deleteToken() throws
 }
 
 final class DefaultUserRepository: UserRepository {
@@ -24,9 +23,5 @@ final class DefaultUserRepository: UserRepository {
     
     func getUser() async throws -> User {
         try await userService.getUser()
-    }
-    
-    func deleteToken() throws {
-       try tokenStorage.deleteToken()
     }
 }
