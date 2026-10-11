@@ -13,6 +13,8 @@ final class  AppStateManager {
     var state: AppState = .loading
     var user: User?
     
+    var onLogout: (() -> Void)?
+    
     private let tokenStorage: TokenStoring
     private let userRepository: UserRepository
     
@@ -53,6 +55,8 @@ final class  AppStateManager {
         } catch  {
             print("Logout error: \(error.localizedDescription)")
         }
+        user = nil
+        onLogout?()
         state = .unauthenticated
     }
 }

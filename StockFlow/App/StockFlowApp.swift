@@ -19,7 +19,12 @@ struct StockFlowApp: App {
         
         let appStateMenager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
         
-        _appStateManager = State(initialValue: appStateMenager) //_appStateManager ozune muraciet edir // evvelceden StockFlowwAppde yaradilmis AppStateMenager bura otururuk
+        appStateMenager.onLogout = {
+            dependencies.productsStore.reset()
+            dependencies.salesStore.reset()
+        }
+        
+        _appStateManager = State(initialValue: appStateMenager)
     }
     var body: some Scene {
         WindowGroup {
