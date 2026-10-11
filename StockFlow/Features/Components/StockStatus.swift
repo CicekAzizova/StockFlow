@@ -26,22 +26,22 @@ enum StockStatus {
     var color: Color {
         switch self {
         case .inStock:
-            return Color(red: 0.09, green: 0.63, blue: 0.31)
+            return .success
         case .lowStock:
-            return Color(red: 0.95, green: 0.60, blue: 0.05)
+            return .pending
         case .outOfStock:
-            return Color(red: 0.90, green: 0.15, blue: 0.15)
+            return .error
         }
     }
 
     var backgroundColor: Color {
         switch self {
         case .inStock:
-            return .green.opacity(0.10)
+            return .success.opacity(0.10)
         case .lowStock:
-            return .orange.opacity(0.10)
+            return .pending.opacity(0.10)
         case .outOfStock:
-            return .red.opacity(0.10)
+            return .error.opacity(0.10)
         }
     }
 }
