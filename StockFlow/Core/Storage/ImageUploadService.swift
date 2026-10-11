@@ -70,8 +70,6 @@ final class ImageUploadService {
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
-            print("Upload status:", httpResponse.statusCode)
-            print("Upload response:", String(data: data, encoding: .utf8) ?? "No response body")
             throw ImageUploadError.uploadFailed(httpResponse.statusCode)
         }
 
