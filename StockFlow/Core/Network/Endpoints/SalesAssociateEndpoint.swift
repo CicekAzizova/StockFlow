@@ -8,14 +8,17 @@
 enum SalesAssociateEndpoint: Endpoint {
    
     case addSalesAssociate(SalesAssociateRequest)
-    case detailSalesAssociate
+    case getSalesAssociates
+    case delete(id: Int)
     
     var path: String {
         switch self {
         case .addSalesAssociate:
-            ""
-        case .detailSalesAssociate:
-            ""
+            "/users/sales-associate"
+        case .delete(let id):
+            "/users/\(id)"
+        case .getSalesAssociates:
+            "/users"
         }
     }
     
@@ -27,7 +30,9 @@ enum SalesAssociateEndpoint: Endpoint {
         switch self {
         case .addSalesAssociate:
                 .post
-        case .detailSalesAssociate:
+        case .delete:
+                .delete
+        case .getSalesAssociates:
                 .get
         }
     }
@@ -36,7 +41,9 @@ enum SalesAssociateEndpoint: Endpoint {
         switch self {
         case .addSalesAssociate(let request):
             return request
-        case .detailSalesAssociate:
+        case .delete:
+            return nil
+        case .getSalesAssociates:
             return nil
         }
     }

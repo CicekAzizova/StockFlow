@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "StockFlow_AppIcon_1024x1024_fixed.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

@@ -6,42 +6,23 @@
 //
 
 protocol StoreRepository {
-    func createStore(
-        name: String,
-        email: String,
-        password: String,
-        phone: String,
-        storeName: String,
-        storeAddress: String,
-        storePhone: String
-    ) async throws -> StoreResponse
+    func createStore(_ request: StoreRequest) async throws -> StoreResponse
 }
 
 final class DefaultStoreRepository: StoreRepository {
-    private let storeService: StoreService
+    
+    private let networkService: NetworkService
     private let tokenStorage: TokenStoring
 
-    
-    init(storeService: StoreService,tokenStorage: TokenStoring) {
-        self.storeService = storeService
+    init(networkService: NetworkService, tokenStorage: TokenStoring) {
+        self.networkService = networkService
         self.tokenStorage = tokenStorage
     }
     
-    func createStore(name: String, email: String, password: String, phone: String, storeName: String, storeAddress: String, storePhone: String) async throws -> StoreResponse {
-        let response =  try await storeService.createStore(
-            name: name,
-            email: email,
-            password: password,
-            phone: phone,
-            storeName: storeName,
-            storeAddress: storeAddress,
-            storePhone: storePhone
-        )
-        try saveToken(response.token)
+    func createStore(_ request: StoreRequest) async throws -> StoreResponse {
+        let response: StoreResponse = try await networkService.request(StoreEndpoint.createStore(request))
+        guard !response.token.isEmpty else { throw NetworkError.invalidResponse }
+        try tokenStorage.saveToken(response.token)
         return response
-    }
-    
-    func saveToken(_ token: String) throws {
-        try tokenStorage.saveToken(token)
     }
 }

@@ -13,22 +13,18 @@ protocol AuthRepository {
 
 final class DefaultAuthRepository: AuthRepository {
     
-    private let authService: AuthService
+    private let networkService: NetworkService
     private let tokenStorage: TokenStoring
     
-    init(authService: AuthService, tokenStorage: TokenStoring) {
-        self.authService = authService
+    init(networkService: NetworkService, tokenStorage: TokenStoring) {
+        self.networkService = networkService
         self.tokenStorage = tokenStorage
     }
     
     func login(email: String, password: String) async throws -> LoginResponse {
-        let response = try await   authService.login(email: email, password: password)
+        let response: LoginResponse = try await networkService.request(AuthEndpoint.login(email: email, password: password))
         guard !response.token.isEmpty else { throw NetworkError.invalidResponse }
-        try saveToken(response.token)
+        try tokenStorage.saveToken(response.token)
         return response
-    }
-    
-    func saveToken(_ token: String) throws {
-        try tokenStorage.saveToken(token)
     }
 }

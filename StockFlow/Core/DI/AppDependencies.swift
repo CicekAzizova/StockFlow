@@ -11,65 +11,68 @@ final class AppDependencies {
     
     let tokenStorage: TokenStoring
     
-    let authService: AuthService
     let authRepository: AuthRepository
     
-    let storeService: StoreService
     let storeRepository: StoreRepository
     
-    let userService: UserService
     let userRepository: UserRepository
     
-    let productService: ProductService
     let productRepository: ProductRepository
     
     let productsStore: ProductsStore
+    
+    let salesAssociateRepository: SalesAssociateRepository
+    
+    let salesStore: SalesStore
+    let salesRepository: SalesRepository
+    
     
 
     init() {
         let tokenStorage = KeychainWrapper()
         let networkService = DefaultNetworkService(tokenStoring: tokenStorage)
 
-        let authService = DefaultAuthService(networkService: networkService)
+ 
         let authRepository = DefaultAuthRepository(
-            authService: authService,
+            networkService: networkService,
             tokenStorage: tokenStorage
         )
 
-        let storeService = DefaultStoreService(networkService: networkService )
         let storeRepository = DefaultStoreRepository(
-            storeService: storeService,
+            networkService: networkService,
             tokenStorage: tokenStorage
         )
         
-        let userService = DefaultUserService(networkService: networkService)
         let userRepository = DefaultUserRepository(
-            userService: userService,
-            tokenStorage: tokenStorage
-            
+            networkService: networkService
         )
         
-        let productService = DefaultProductService(networkService: networkService)
-        let productRepository = DefaultProductRepository(productService: productService)
+        let productRepository = DefaultProductRepository(networkService: networkService)
         
         let productsStore = ProductsStore(productRepository: productRepository)
-
+        
+        let salesAssociateRepository = DefaultSalesAssociateRepository(networkService: networkService)
+ 
+        let salesRepository = DefaultSalesRepository(networkService: networkService)
+        let salesStore = SalesStore(salesRepository: salesRepository)
+        
         self.tokenStorage = tokenStorage
         self.networkService = networkService
 
-        self.authService = authService
         self.authRepository = authRepository
         
-        self.storeService = storeService
         self.storeRepository = storeRepository
         
-        self.userService = userService
         self.userRepository = userRepository
         
-        self.productService = productService
         self.productRepository = productRepository
         
         self.productsStore = productsStore
+        
+        self.salesAssociateRepository = salesAssociateRepository
+        
+        self.salesRepository = salesRepository
+        self.salesStore = salesStore
     }
 
     @MainActor
@@ -110,9 +113,34 @@ final class AppDependencies {
     }
     
     @MainActor
-    func makeOwnerDashboardViewModel() -> OwnerDashboardViewModel {
-        OwnerDashboardViewModel(
-            productStore: productsStore
+    func makeHomeViewModel() -> HomeViewModel {
+        HomeViewModel(
+            productStore: productsStore, salesStore: salesStore
         )
+    }
+    
+    @MainActor
+    func makeAddSalesAssociateViewModel() -> AddSalesAssociateViewModel {
+        AddSalesAssociateViewModel(repository: salesAssociateRepository)
+    }
+    
+    @MainActor
+    func makeTeamViewModel() -> TeamViewModel {
+        TeamViewModel(repository: salesAssociateRepository)
+    }
+    
+    @MainActor
+    func makeSalesAssociateSalesViewModel() -> SalesAssociateSalesViewModel {
+        SalesAssociateSalesViewModel(salesStore: salesStore)
+    }
+    
+    @MainActor
+    func makeSalesHistoryViewModel() -> SalesHistoryViewModel {
+        SalesHistoryViewModel(salesStore: salesStore)
+    }
+    
+    @MainActor
+    func makeLowStockViewModel() -> LowStockViewModel {
+        LowStockViewModel(productStore: productsStore)
     }
 }

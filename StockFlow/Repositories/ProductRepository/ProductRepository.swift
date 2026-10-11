@@ -8,38 +8,42 @@ import Foundation
 
 protocol ProductRepository {
     func createProduct(_ request: ProductRequest) async throws -> ProductResponse
-    func getProducts() async throws -> [ProductResponse]
+    func getProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductResponse>
     func searchProducts(_ query: String) async throws -> [ProductResponse]
     func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse
     func deleteProduct(id: Int) async throws
+    func getLowStockProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductResponse>
 }
 
 final class DefaultProductRepository: ProductRepository {
   
-    private let productService: ProductService
+    private let networkService: NetworkService
     
-    init(productService: ProductService) {
-        self.productService = productService
+    init(networkService: NetworkService) {
+        self.networkService = networkService
     }
     
     func createProduct(_ request: ProductRequest) async throws -> ProductResponse {
-        try await productService.createProduct(request)
+        try await networkService.request(ProductsEndpoint.createProduct(request))
     }
     
-    func getProducts() async throws -> [ProductResponse] {
-        try await productService.getProducts()
+    func getProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductResponse> {
+        try await networkService.request(ProductsEndpoint.getProducts(page: page, limit: limit))
     }
     
     func searchProducts(_ query: String) async throws -> [ProductResponse] {
-        try await productService.searchProducts(query)
-       
+        try await networkService.request(ProductsEndpoint.search(query: query))
     }
     
     func updateProduct(id: Int, request: ProductRequest) async throws -> ProductResponse {
-        try await productService.updateProduct(id: id, request: request)
+        try await networkService.request(ProductsEndpoint.editProduct(id: id, request: request))
     }
     
     func deleteProduct(id: Int) async throws  {
-        try await productService.deleteProduct(id: id)
+        try await networkService.requestVoid(ProductsEndpoint.deleteProduct(id: id))
+    }
+    
+    func getLowStockProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductResponse> {
+        try await networkService.request(ProductsEndpoint.getLowStockProducts(page: page, limit: limit))
     }
 }

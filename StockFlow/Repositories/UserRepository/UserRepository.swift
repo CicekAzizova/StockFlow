@@ -13,15 +13,14 @@ protocol UserRepository {
 
 final class DefaultUserRepository: UserRepository {
     
-    private let userService: UserService
-    private let tokenStorage: TokenStoring
-
-    init(userService: UserService, tokenStorage: TokenStoring) {
-        self.userService = userService
-        self.tokenStorage = tokenStorage
+    private let networkService: NetworkService
+    
+    init(networkService: NetworkService) {
+        self.networkService = networkService
     }
     
     func getUser() async throws -> User {
-        try await userService.getUser()
+        let endpoint = UserEndpoint.getProfile
+        return try await networkService.request(endpoint)
     }
 }

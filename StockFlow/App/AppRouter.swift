@@ -25,12 +25,22 @@ struct AppRouter: View {
         case .unauthenticated:
             LoginView(viewModel: dependencies.makeLoginViewModel(appStateManager: appStateManager), dependencies: dependencies, appStateManager: appStateManager)
         case .authenticated:
+            switch appStateManager.user?.role {
+            case .owner:
                 OwnerTabView(
                     dependencies: dependencies,
                     appStateManager: appStateManager,
                     user: appStateManager.user
                 )
-           
+            case .salesAssociate:
+                SaleAssociateTabView(
+                    dependencies: dependencies,
+                    appStateManager: appStateManager,
+                    user: appStateManager.user
+                )
+            case .none:
+                ProgressView()
+            }
         }
     }
 }
