@@ -39,7 +39,7 @@ final class LowStockViewModel {
 
     func loadMoreProducts() async {
         do {
-            try await productStore.loadMoreLowStock(limit: 10)
+            try await productStore.loadMoreLowStock()
         } catch {
             state = .error(error.localizedDescription)
         }

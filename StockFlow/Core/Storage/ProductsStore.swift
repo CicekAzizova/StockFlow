@@ -20,6 +20,9 @@ final class ProductsStore {
     private var hasMoreProducts = true
     private var isLoadingMoreProducts = false
     var totalProducts = 0
+    
+    private var productsPageSize = 10
+    private var lowStockPageSize = 10
 
     var products: [ProductResponse] = []
     var lowStockProducts: [ProductResponse] = []
@@ -39,8 +42,9 @@ final class ProductsStore {
 
     // MARK: - Products
     
-    func loadProducts(limit: Int) async throws {
+    func loadProducts(limit: Int = 10) async throws {
         isLoading = true
+        productsPageSize = limit
         currentProductPage = 1
         hasMoreProducts = true
         
@@ -54,7 +58,7 @@ final class ProductsStore {
         hasMoreProducts = response.hasNext
     }
     
-    func loadMoreProducts(limit: Int) async throws {
+    func loadMoreProducts() async throws {
         guard hasMoreProducts else { return }
         guard !isLoadingMoreProducts else { return }
         
@@ -66,7 +70,7 @@ final class ProductsStore {
         
         let nextPage = currentProductPage + 1
         
-        let response = try await productRepository.getProducts(page: nextPage, limit: limit)
+        let response = try await productRepository.getProducts(page: nextPage, limit: productsPageSize)
         
         currentProductPage = response.page
         products.append(contentsOf: response.items)
@@ -76,7 +80,8 @@ final class ProductsStore {
     
     // MARK: - Low Stock
     
-    func loadLowStock(limit: Int) async throws {
+    func loadLowStock(limit: Int = 10) async throws {
+        lowStockPageSize = limit
         currentLowStockPage = 1
         hasMoreLowStock = true
 
@@ -87,7 +92,7 @@ final class ProductsStore {
         hasMoreLowStock = response.hasNext
     }
     
-    func loadMoreLowStock(limit: Int) async throws {
+    func loadMoreLowStock() async throws {
         guard hasMoreLowStock else { return }
         guard !isLoadingMoreLowStock else { return }
         
@@ -101,7 +106,7 @@ final class ProductsStore {
         
         let response = try await productRepository.getLowStockProducts(
             page: nextPage,
-            limit: limit
+            limit: lowStockPageSize
         )
         lowStockProducts.append(contentsOf: response.items)
         
@@ -112,7 +117,7 @@ final class ProductsStore {
 
     func addProduct(_ request: ProductRequest) async throws -> ProductResponse {
         let response = try await productRepository.createProduct(request)
-        try await loadProducts(limit: 5)
+        try await loadProducts(limit: productsPageSize)
         return response
     }
     

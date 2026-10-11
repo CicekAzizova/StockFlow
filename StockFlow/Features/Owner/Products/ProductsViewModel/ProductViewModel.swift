@@ -77,7 +77,7 @@ final class ProductViewModel {
     
     func loadMoreProducts() async {
         do {
-            try await productStore.loadMoreProducts(limit: 10)
+            try await productStore.loadMoreProducts()
             state = .loaded(allProducts)
         }
         catch {
