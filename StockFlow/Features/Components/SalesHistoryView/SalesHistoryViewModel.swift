@@ -14,19 +14,22 @@ final class SalesHistoryViewModel {
     private let salesStore: SalesStore
 
     var state: SalesHistoryViewState = .idle
+    
+    var loadMoreError: String?
 
     init(salesStore: SalesStore) {
         self.salesStore = salesStore
     }
 
     func loadSales() async {
+        let previousState = state
         state = .loading
 
         do {
-            try await salesStore.loadRecentSales(limit: 10)
+            try await salesStore.loadRecentSales()
             state = .loaded
         } catch is CancellationError {
-            return
+            state = previousState
         } catch {
             state = .error(error.localizedDescription)
         }
@@ -37,10 +40,15 @@ final class SalesHistoryViewModel {
     }
 
     func loadMoreSales() async {
+        loadMoreError = nil
         do {
-            try await salesStore.loadMoreSales(limit: 10)
-        } catch {
-            state = .error(error.localizedDescription)
+            try await salesStore.loadMoreSales()
+        }
+        catch is CancellationError {
+            return
+        }
+        catch {
+            loadMoreError = error.localizedDescription
         }
     }
 

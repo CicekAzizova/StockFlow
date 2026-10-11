@@ -56,13 +56,13 @@ final class CreateStoreViewModel {
     private func validateFields() -> Bool {
         fieldErrors.removeAll()
 
-        if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if name.isBlank {
             fieldErrors[.name] = "Full name is required."
         }
 
-        if email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if email.isBlank {
             fieldErrors[.email] = "Email is required."
-        } else if !email.contains("@"), !email.contains(".") {
+        } else if !email.isValidEmail {
             fieldErrors[.email] = "Enter a valid email."
         }
 
@@ -72,19 +72,19 @@ final class CreateStoreViewModel {
             fieldErrors[.password] = "Password must contain at least 6 characters."
         }
 
-        if phone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if phone.isBlank {
             fieldErrors[.phone] = "Phone is required."
         }
 
-        if storeName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if storeName.isBlank {
             fieldErrors[.storeName] = "Store name is required."
         }
 
-        if storeAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if storeAddress.isBlank {
             fieldErrors[.storeAddress] = "Store address is required."
         }
 
-        if storePhone.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if storePhone.isBlank {
             fieldErrors[.storePhone] = "Store phone is required."
         }
 

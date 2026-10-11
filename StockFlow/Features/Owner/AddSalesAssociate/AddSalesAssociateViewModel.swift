@@ -43,7 +43,7 @@ final class AddSalesAssociateViewModel {
                     surname: surname,
                     fin: fin,
                     phone: phone,
-                    email: email,
+                    email: email.trimmingCharacters(in: .whitespacesAndNewlines),
                     password: password
                 )
             )
@@ -58,7 +58,7 @@ final class AddSalesAssociateViewModel {
         emailError = nil
         passwordError = nil
 
-        if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if name.isBlank{
             nameError = "First name is required"
         }
 
@@ -66,14 +66,14 @@ final class AddSalesAssociateViewModel {
 
         if trimmedEmail.isEmpty {
             emailError = "Email is required"
-        } else if !trimmedEmail.contains("@") || !trimmedEmail.contains(".") {
+        } else if !trimmedEmail.isValidEmail{
             emailError = "Please enter a valid email"
         }
 
         if password.isEmpty {
             passwordError = "Password is required"
-        } else if password.count <= 4 {
-            passwordError = "Password must be more than 4 characters"
+        } else if password.count <= 6 {
+            passwordError = "Password must be more than 6 characters"
         }
 
         return nameError == nil &&

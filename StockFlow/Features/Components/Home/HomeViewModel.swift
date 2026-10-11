@@ -25,6 +25,7 @@ final class HomeViewModel {
     }
     
     func loadHome() async {
+        let previousState = state
         state = .loading
         do   {
             async let loadProducts: () = loadProducts()
@@ -42,7 +43,7 @@ final class HomeViewModel {
             state = .loaded
         }
         catch is CancellationError {
-            return
+            state = previousState
         }
         catch {
             state = .error(error.localizedDescription)
@@ -72,11 +73,7 @@ final class HomeViewModel {
     var productsCount: Int {
         productStore.productsCount
     }
-    
-    var totalQuantity: Int {
-        productStore.totalQuantity
-    }
-    
+
     var lowStockCount: Int {
         productStore.lowStockCount
     }
@@ -96,8 +93,5 @@ final class HomeViewModel {
     var todaySales: Double {
         salesStore.salesSummary?.todaySales ?? 0
     }
-    
-    var totalOrders: Int {
-        salesStore.salesSummary?.totalOrders ?? 0
-    }
+
 }

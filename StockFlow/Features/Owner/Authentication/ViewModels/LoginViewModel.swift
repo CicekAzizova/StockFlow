@@ -49,9 +49,9 @@ final class LoginViewModel {
     private func validateFields() -> Bool {
         fieldErrors.removeAll()
         
-        if email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if email.isBlank {
             fieldErrors[.email] = "Email is required."
-        } else if !email.contains("@"), !email.contains(".") {
+        } else if !email.isValidEmail {
             fieldErrors[.email] = "Enter a valid email."
         }
         

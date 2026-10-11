@@ -16,6 +16,8 @@ final class ProductViewModel {
     
     var query: String = ""
     
+    var loadMoreError: String?
+    
     var selectedFilter: ProductStockFilter = .all
     
     init(productStore: ProductsStore) {
@@ -27,10 +29,7 @@ final class ProductViewModel {
     var productsCount: Int {
         productStore.productsCount
     }
-    
-    var lowStockProducts: [ProductResponse] {
-        productStore.lowStockProducts
-    }
+
     var isLowStock: (ProductResponse) -> Bool {
         { product in
             product.quantity <= product.lowStockLimit
@@ -47,7 +46,7 @@ final class ProductViewModel {
             case .inStock:
                 stockFilteredProducts = allProducts.filter { $0.quantity > $0.lowStockLimit }
             case .lowStock:
-                stockFilteredProducts = lowStockProducts
+                stockFilteredProducts = allProducts.filter(isLowStock)
             case .outStock:
                 stockFilteredProducts = allProducts.filter{ $0.quantity == 0 }
             }
@@ -61,10 +60,14 @@ final class ProductViewModel {
     }
     
     func loadProducts() async {
+        let previousState = state
         state = .loading
         do {
             try await productStore.loadProducts(limit: 10)
             state = .loaded(allProducts)
+        }
+        catch is CancellationError {
+            state = previousState
         }
         catch {
             state = .error(error.localizedDescription)
@@ -76,12 +79,15 @@ final class ProductViewModel {
     }
     
     func loadMoreProducts() async {
+        loadMoreError = nil
         do {
             try await productStore.loadMoreProducts()
             state = .loaded(allProducts)
+        }catch is CancellationError {
+            return
         }
         catch {
-            state = .error(error.localizedDescription)
+            loadMoreError = error.localizedDescription
         }
     }
 }

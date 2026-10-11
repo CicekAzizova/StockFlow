@@ -17,6 +17,8 @@ final class SalesStore {
     var isLoadingMoreSales = false
     var isLoading: Bool = false
     var totalSales = 0
+    
+    private var salesPageSize = 10
 
     var recentSales: [SaleResponse] = []
     
@@ -25,9 +27,18 @@ final class SalesStore {
     init(salesRepository: SalesRepository) {
         self.salesRepository = salesRepository
     }
-    //MARK: - Owner
-    func loadRecentSales(limit: Int) async throws {
+    
+    func reset() {
+        recentSales = []
+        salesSummary = nil
+        totalSales = 0
+        currentSalesPage = 1
+        hasMoreSales = true
+    }
+  
+    func loadRecentSales(limit: Int = 10) async throws {
         isLoading = true
+        salesPageSize = limit
         currentSalesPage = 1
         hasMoreSales = true
         
@@ -46,7 +57,7 @@ final class SalesStore {
             
     }
     
-    func loadMoreSales(limit: Int) async throws {
+    func loadMoreSales() async throws {
         guard hasMoreSales else { return }
         guard !isLoadingMoreSales else { return }
         
@@ -59,7 +70,7 @@ final class SalesStore {
             let nextPage = currentSalesPage + 1
             let response = try await salesRepository.getRecentSales(
                 page: nextPage,
-                limit: limit
+                limit: salesPageSize
             )
             
             recentSales.append(contentsOf: response.items)
@@ -68,11 +79,10 @@ final class SalesStore {
       
     }
     
-    func refresh(limit: Int) async throws {
-       try await loadRecentSales(limit: limit)
+    func refresh() async throws {
+       try await loadRecentSales(limit: salesPageSize)
     }
     
-    //MARK: - Seller
     
     func loadSalesSummary() async throws {
         salesSummary = try await salesRepository.getSalesSummary()

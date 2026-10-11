@@ -62,9 +62,9 @@ final class AddProductViewModel {
         }
 
         guard
-            let price = Double(price),
-            let discount = Double(discount),
-            let costPrice = Double(costPrice),
+            let price = price.asDecimal,
+            let discount = discount.asDecimal,
+            let costPrice = costPrice.asDecimal,
             let quantity = Int(quantity),
             let lowStockLimit = Int(lowStockLimit)
         else {
@@ -100,7 +100,7 @@ final class AddProductViewModel {
         ]
 
         guard fields.allSatisfy({
-            !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            !$0.isBlank
         }) else {
             validationMessage = "Please fill in all fields."
             return false

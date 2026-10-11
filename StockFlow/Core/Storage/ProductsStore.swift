@@ -42,6 +42,17 @@ final class ProductsStore {
 
     // MARK: - Products
     
+    func reset() {
+        products = []
+        lowStockProducts = []
+        totalProducts = 0
+        totalLowProducts = 0
+        currentProductPage = 1
+        currentLowStockPage = 1
+        hasMoreProducts = true
+        hasMoreLowStock = true
+    }
+    
     func loadProducts(limit: Int = 10) async throws {
         isLoading = true
         productsPageSize = limit

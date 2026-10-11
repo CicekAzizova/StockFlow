@@ -20,6 +20,7 @@ final class SalesAssociateSalesViewModel {
     }
     
     func loadSales() async {
+        let previousState = state
         state = .loading
         
         do {
@@ -28,7 +29,7 @@ final class SalesAssociateSalesViewModel {
             state = .loaded
             
         } catch is CancellationError {
-            return
+            state = previousState
         }catch {
             state = .error(error.localizedDescription)
         }
