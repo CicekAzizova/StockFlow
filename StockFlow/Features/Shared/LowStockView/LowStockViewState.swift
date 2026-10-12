@@ -1,14 +1,14 @@
 //
-//  LoginViewState.swift
+//  LowStockViewState.swift
 //  StockFlow
 //
-//  Created by Cicek on 20.09.26.
+//  Created by Cicek on 09.10.26.
 //
 
-enum LoginViewState {
+enum LowStockViewState {
     case idle
     case loading
-    case loaded(User)
+    case loaded
     case error(String)
     
     var isLoading: Bool {

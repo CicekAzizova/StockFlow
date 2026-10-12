@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @State var viewModel: ProfileViewModel
-    let appStateMenager: AppStateManager
+    let appStateManager: AppStateManager
 
     var body: some View {
         ZStack {
@@ -173,7 +173,7 @@ struct ProfileView: View {
             title: "Log Out",
             background: .red
         ) {
-            appStateMenager.logout()
+            appStateManager.logout()
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)

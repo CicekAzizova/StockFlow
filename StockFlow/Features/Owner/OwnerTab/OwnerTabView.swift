@@ -5,7 +5,6 @@
 //  Created by Cicek on 24.09.26.
 //
 import SwiftUI
-import PhotosUI
 
 struct OwnerTabView: View {
     let dependencies: AppDependencies
@@ -16,8 +15,6 @@ struct OwnerTabView: View {
     @State private var homePath = NavigationPath()
     @State private var productPath = NavigationPath()
     @State private var teamPath = NavigationPath()
-    @State private var selectionItems: [PhotosPickerItem] = []
-    @State private var selectedImages: [UIImage] = []
     
     var body: some View {
         TabView {
@@ -52,8 +49,6 @@ struct OwnerTabView: View {
                                        viewModel: dependencies.makeAddProductViewModel(
                                            product: product
                                        ),
-                                       selectionItems: $selectionItems,
-                                       selectedImages: $selectedImages,
                                        path: $homePath
                                    )
 
@@ -77,8 +72,6 @@ struct OwnerTabView: View {
                         dependencies: dependencies,
                         viewModel: dependencies.makeProductViewModel(),
                         path: $productPath,
-                        selectionItems: $selectionItems,
-                        selectedImages: $selectedImages
                     )
                     .navigationDestination(
                         for: ProductRoute.self
@@ -87,8 +80,6 @@ struct OwnerTabView: View {
                         case .addProduct:
                             AddProductView(
                                 viewModel: dependencies.makeAddProductViewModel(),
-                                selectionItems: $selectionItems,
-                                selectedImages: $selectedImages,
                                 path: $productPath
                             )
                         case .productDetail(
@@ -100,8 +91,6 @@ struct OwnerTabView: View {
                         ):
                             AddProductView(
                                 viewModel: dependencies.makeAddProductViewModel(product: product),
-                                selectionItems: $selectionItems,
-                                selectedImages: $selectedImages,
                                 path: $productPath
                             )
                         }
@@ -133,7 +122,7 @@ struct OwnerTabView: View {
                     ProfileView(
                         viewModel: dependencies
                             .makeProfileViewModel(),
-                        appStateMenager: appStateManager
+                        appStateManager: appStateManager
                     )
                 }
             }label: {

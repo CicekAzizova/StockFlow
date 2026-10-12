@@ -7,16 +7,11 @@
 
 
 import SwiftUI
-import PhotosUI
 
 struct AddProductView: View {
 
     @State private var viewModel: AddProductViewModel
-
     @FocusState private var focusField: AddProductFocusedField?
-
-    @Binding var selectionItems: [PhotosPickerItem]
-    @Binding var selectedImages: [UIImage]
     @Binding var path: NavigationPath
 
     let product: ProductResponse?
@@ -27,14 +22,10 @@ struct AddProductView: View {
 
     init(
         viewModel: AddProductViewModel,
-        selectionItems: Binding<[PhotosPickerItem]>,
-        selectedImages: Binding<[UIImage]>,
         path: Binding<NavigationPath>
     ) {
         self._viewModel = State(initialValue: viewModel)
         self.product = viewModel.product
-        self._selectionItems = selectionItems
-        self._selectedImages = selectedImages
         self._path = path
     }
 
@@ -56,10 +47,7 @@ struct AddProductView: View {
             VStack(alignment: .leading) {
                 header
 
-                AddProductImageView(
-                    selectionItems: $selectionItems,
-                    selectedImages: $selectedImages
-                )
+                AddProductImageView(viewModel: viewModel)
 
                 form
 
@@ -250,30 +238,10 @@ struct AddProductView: View {
 
     @MainActor
     private func submitProduct() async {
-        viewModel.validationMessage = nil
 
-        var imageData: [Data] = []
-
-        for item in selectionItems {
-            do {
-                guard let data = try await item.loadTransferable(type: Data.self) else {
-                    viewModel.validationMessage = "Unable to load selected image."
-                    return
-                }
-
-                imageData.append(data)
-
-            } catch {
-                viewModel.validationMessage = "Failed to load selected image."
-                return
-            }
-        }
-
-        await viewModel.saveProduct(images: imageData)
+        await viewModel.saveProduct()
 
         if case .success = viewModel.state {
-            selectionItems = []
-            selectedImages = []
 
             if !path.isEmpty {
                 path.removeLast()

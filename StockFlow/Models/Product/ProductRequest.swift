@@ -17,7 +17,7 @@ struct ProductRequest: Encodable {
     let costPrice: Double
     let quantity: Int
     let lowStockLimit: Int
-    let imageUrls: [String]?
+    var imageUrls: [String]?
     
     enum CodingKeys: String, CodingKey {
         case name, sku, category,description, price, discount, quantity

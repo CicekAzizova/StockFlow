@@ -106,7 +106,7 @@ struct SaleAssociateTabView: View {
             }
             
             Tab {
-                ProfileView(viewModel: dependencies.makeProfileViewModel(), appStateMenager: appStateManager)
+                ProfileView(viewModel: dependencies.makeProfileViewModel(), appStateManager: appStateManager)
             }label: {
                 Image(.profileIcon)
                     .renderingMode(.template)

@@ -12,11 +12,7 @@ struct OwnerProductsView: View {
     let dependencies: AppDependencies
     
     @State var viewModel: ProductViewModel
-    
     @Binding  var path: NavigationPath
-    
-    @Binding var selectionItems: [PhotosPickerItem]
-    @Binding var selectedImages: [UIImage]
     @FocusState private var isSearchFocused
     
     
@@ -92,10 +88,4 @@ struct OwnerProductsView: View {
         }
     }
 }
-#Preview {
-    @Previewable @State var selectedImages: [UIImage] = []
-    @Previewable @State var selectionItems: [PhotosPickerItem] = []
-    @Previewable @State var  path = NavigationPath()
-    let dependencies = AppDependencies()
-    OwnerProductsView(dependencies: dependencies, viewModel: dependencies.makeProductViewModel(), path: $path, selectionItems: $selectionItems, selectedImages: $selectedImages)
-}
+

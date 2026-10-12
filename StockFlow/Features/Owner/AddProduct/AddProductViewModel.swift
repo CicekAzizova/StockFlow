@@ -5,16 +5,22 @@
 //  Created by Cicek on 27.09.26.
 //
 
+import PhotosUI
+import UIKit
+import _PhotosUI_SwiftUI
 
-import Foundation
+struct SelectedImage: Identifiable {
+    let id = UUID()
+    let data: Data
+    let preview: UIImage
+}
 
 @Observable
 @MainActor
 final class AddProductViewModel {
 
     private let productStore: ProductsStore
-    private let imageUploadService = ImageUploadService()
-    private let tokenStorage: TokenStoring
+    private let imageUploadRepository: ImageUploadRepository
 
     var state: AddProductViewState = .idle
 
@@ -30,17 +36,21 @@ final class AddProductViewModel {
     var quantity = ""
     var lowStockLimit = ""
     var imageUrls: [String]?
+    
+    var pickerItems: [PhotosPickerItem] = []
+    private(set) var selectedImages: [SelectedImage] = []
+    private let maxImages = 5
 
     var validationMessage: String?
 
     init(
         productStore: ProductsStore,
+        imageUploadRepository: ImageUploadRepository,
         product: ProductResponse? = nil,
-        tokenStorage: TokenStoring
     ) {
         self.productStore = productStore
+        self.imageUploadRepository = imageUploadRepository
         self.product = product
-        self.tokenStorage = tokenStorage
 
         guard let product else { return }
 
@@ -55,7 +65,66 @@ final class AddProductViewModel {
         lowStockLimit = String(product.lowStockLimit)
         imageUrls = product.imageUrls
     }
+    
+    //MARK: - Images
+    
+    var existingImageUrls: [String] {
+        imageUrls ?? []
+    }
+    
+    var remainingImageSlots: Int {
+        max(0, maxImages - existingImageUrls.count)
+    }
 
+    func removeExistingImage(at index: Int) {
+        guard imageUrls?.indices.contains(index) == true else { return }
+        imageUrls?.remove(at: index)
+    }
+    
+    func loadSelectImages() async {
+        var loaded: [SelectedImage] = []
+        
+        for item in pickerItems {
+            if let data = try? await item.loadTransferable(type: Data.self),
+                let image = UIImage(data: data) {
+                loaded.append(SelectedImage(data: data, preview: image))
+            }
+        }
+        selectedImages = loaded
+    }
+    
+    func removeImage(at index: Int) {
+        guard selectedImages.indices.contains(index),
+              pickerItems.indices.contains(index) else { return }
+        selectedImages.remove(at: index)
+        pickerItems.remove(at: index)
+    }
+
+    //MARK: - Validation
+    
+    func validateFields() -> Bool {
+        let fields = [
+            name,
+            sku,
+            category,
+            description,
+            price,
+            discount,
+            costPrice,
+            quantity,
+            lowStockLimit
+        ]
+
+        guard fields.allSatisfy({
+            !$0.isBlank
+        }) else {
+            validationMessage = "Please fill in all fields."
+            return false
+        }
+
+        return true
+    }
+    
     private func makeProductRequest() -> ProductRequest? {
         guard validateFields() else {
             return nil
@@ -86,33 +155,13 @@ final class AddProductViewModel {
         )
     }
 
-    func validateFields() -> Bool {
-        let fields = [
-            name,
-            sku,
-            category,
-            description,
-            price,
-            discount,
-            costPrice,
-            quantity,
-            lowStockLimit
-        ]
-
-        guard fields.allSatisfy({
-            !$0.isBlank
-        }) else {
-            validationMessage = "Please fill in all fields."
-            return false
-        }
-
-        return true
-    }
-
-    func saveProduct(images: [Data] = []) async {
+   
+    //MARK: - Save
+    
+    func saveProduct() async {
         validationMessage = nil
 
-        guard let initialRequest = makeProductRequest() else {
+        guard var request = makeProductRequest() else {
             return
         }
 
@@ -120,38 +169,14 @@ final class AddProductViewModel {
 
         do {
             var uploadedUrls = imageUrls ?? []
-
-            if !images.isEmpty {
-                guard
-                    let token = try tokenStorage.readToken(),
-                    !token.isEmpty
-                else {
-                    throw ImageUploadError.missingToken
-                }
-
-                for imageData in images {
-                    let imageUrl = try await imageUploadService.uploadImage(
-                        imageData,
-                        token: token
-                    )
-
-                    uploadedUrls.append(imageUrl)
-                }
+            
+            for image in selectedImages {
+                let url = try await imageUploadRepository.uploadImage(image.data)
+                uploadedUrls.append(url)
             }
 
-            let request = ProductRequest(
-                name: initialRequest.name,
-                sku: initialRequest.sku,
-                category: initialRequest.category,
-                description: initialRequest.description,
-                price: initialRequest.price,
-                discount: initialRequest.discount,
-                costPrice: initialRequest.costPrice,
-                quantity: initialRequest.quantity,
-                lowStockLimit: initialRequest.lowStockLimit,
-                imageUrls: uploadedUrls
-            )
-
+            request.imageUrls = uploadedUrls
+            
             let response: ProductResponse
 
             if let product {
@@ -164,6 +189,8 @@ final class AddProductViewModel {
             }
 
             imageUrls = uploadedUrls
+            pickerItems = []
+            selectedImages = []
             state = .success(response)
             validationMessage = nil
 

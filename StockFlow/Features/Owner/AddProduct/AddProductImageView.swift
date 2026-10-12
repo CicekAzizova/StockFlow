@@ -11,8 +11,7 @@ import UIKit
 
 struct AddProductImageView: View {
 
-    @Binding var selectionItems: [PhotosPickerItem]
-    @Binding var selectedImages: [UIImage]
+    @Bindable var viewModel: AddProductViewModel
     
     var body: some View {
 
@@ -26,35 +25,36 @@ struct AddProductImageView: View {
                 HStack(spacing: 12) {
 
                     // Selected images
-                    ForEach(Array(selectedImages.enumerated()), id: \.offset) { index, image in
+                    ForEach(Array(viewModel.existingImageUrls.enumerated()), id: \.offset) { index, url in
 
                         ZStack(alignment: .topTrailing) {
+                            
+                            RemoteImageView(imageUrl: url, width: 85, height: 85, cornerRadius: 12)
 
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 85, height: 85)
-                                .clipShape(
-                                    RoundedRectangle(cornerRadius: 12)
-                                )
-
-                            Button {
-                                selectedImages.remove(at: index)
-                                selectionItems.remove(at: index)
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundStyle(.white, .red)
-                                    .font(.system(size: 20))
+                            removeButton {
+                                viewModel.removeImage(at: index)
                             }
-                            .offset(x: 6, y: -6)
                         }
                     }
 
-                    if selectionItems.count < 5 {
+                    ForEach(Array(viewModel.selectedImages.enumerated()), id: \.element.id) { index, image in
+                        ZStack(alignment: .topTrailing) {
+                            Image(uiImage: image.preview)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 85, height: 85)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            
+                            removeButton {
+                                viewModel.removeImage(at: index)
+                            }
+                        }
+                    }
+                    if viewModel.remainingImageSlots - viewModel.pickerItems.count > 0 {
 
                         PhotosPicker(
-                            selection: $selectionItems,
-                            maxSelectionCount: 5,
+                            selection: $viewModel.pickerItems,
+                            maxSelectionCount: viewModel.remainingImageSlots,
                             matching: .images
                         ) {
 
@@ -89,22 +89,19 @@ struct AddProductImageView: View {
                     )
             }
         }
-        .onChange(of: selectionItems) { _, newItems in
-
+        .onChange(of: viewModel.pickerItems) { _, _ in
             Task {
-                var loadedImages: [UIImage] = []
-
-                for item in newItems {
-                    if let data = try? await item.loadTransferable(type: Data.self),
-                       let image = UIImage(data: data) {
-                        loadedImages.append(image)
-                    }
-                }
-
-                await MainActor.run {
-                    selectedImages = loadedImages
-                }
+                await viewModel.loadSelectImages()
             }
         }
     }
+    
+    private func removeButton(action: @escaping () -> Void) -> some View {
+            Button(action: action) {
+                Image(systemName: "xmark.circle.fill")
+                    .foregroundStyle(.white, .red)
+                    .font(.system(size: 20))
+            }
+            .offset(x: 6, y: -6)
+        }
 }

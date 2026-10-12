@@ -19,6 +19,8 @@ final class AppDependencies {
     
     let productRepository: ProductRepository
     
+    let imageUploadRepository: ImageUploadRepository
+    
     let productsStore: ProductsStore
     
     let salesAssociateRepository: SalesAssociateRepository
@@ -49,6 +51,8 @@ final class AppDependencies {
         
         let productRepository = DefaultProductRepository(networkService: networkService)
         
+        let imageUploadRepository = DefaultImageUploadRepository(tokenStorage: tokenStorage)
+        
         let productsStore = ProductsStore(productRepository: productRepository)
         
         let salesAssociateRepository = DefaultSalesAssociateRepository(networkService: networkService)
@@ -66,6 +70,8 @@ final class AppDependencies {
         self.userRepository = userRepository
         
         self.productRepository = productRepository
+        
+        self.imageUploadRepository = imageUploadRepository
         
         self.productsStore = productsStore
         
@@ -96,10 +102,8 @@ final class AppDependencies {
     
     @MainActor
     func makeAddProductViewModel(product: ProductResponse? = nil) -> AddProductViewModel {
-        AddProductViewModel(
-            productStore: productsStore,
-            product: product, tokenStorage: tokenStorage
-        )
+        AddProductViewModel(productStore: productsStore, imageUploadRepository: imageUploadRepository,
+            product: product)
     }
     
     @MainActor

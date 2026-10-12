@@ -18,7 +18,7 @@ protocol Endpoint {
 
 extension Endpoint {
     var baseURL: String {
-        "http://localhost:3000"
+        AppConfig.baseURL
     }
     
     var headers: [String: String]? {
