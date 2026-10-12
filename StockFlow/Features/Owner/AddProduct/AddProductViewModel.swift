@@ -24,7 +24,7 @@ final class AddProductViewModel {
 
     var state: AddProductViewState = .idle
 
-    let product: ProductResponse?
+    let product: ProductsResponse?
 
     var name = ""
     var sku = ""
@@ -46,7 +46,7 @@ final class AddProductViewModel {
     init(
         productStore: ProductsStore,
         imageUploadRepository: ImageUploadRepository,
-        product: ProductResponse? = nil,
+        product: ProductsResponse? = nil,
     ) {
         self.productStore = productStore
         self.imageUploadRepository = imageUploadRepository
@@ -177,7 +177,7 @@ final class AddProductViewModel {
 
             request.imageUrls = uploadedUrls
             
-            let response: ProductResponse
+            let response: ProductsResponse
 
             if let product {
                 response = try await productStore.saveProduct(

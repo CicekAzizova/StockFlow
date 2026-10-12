@@ -14,11 +14,11 @@ final class ProductDetailViewModel {
     
     private let productStore: ProductsStore
     
-    let product: ProductResponse
+    let product: ProductsResponse
     
     var state: ProductDetailViewState = .idle
 
-    init(productStore: ProductsStore, product: ProductResponse) {
+    init(productStore: ProductsStore, product: ProductsResponse) {
         self.productStore = productStore
         self.product = product
         

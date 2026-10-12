@@ -14,7 +14,7 @@ struct AddProductView: View {
     @FocusState private var focusField: AddProductFocusedField?
     @Binding var path: NavigationPath
 
-    let product: ProductResponse?
+    let product: ProductsResponse?
 
     private var isEditMode: Bool {
         viewModel.product != nil

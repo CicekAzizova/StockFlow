@@ -8,7 +8,7 @@ import SwiftUI
 
 struct SummaryCardView: View {
     
-    var product: ProductResponse
+    var product: ProductsResponse
     
     var body: some View {
         HStack {

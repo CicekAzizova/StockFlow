@@ -23,32 +23,32 @@ final class ProductViewModel {
     init(productStore: ProductsStore) {
         self.productStore = productStore
     }
-    var allProducts: [ProductResponse] {
+    var allProducts: [ProductsResponse] {
         productStore.products
     }
     var productsCount: Int {
         productStore.productsCount
     }
 
-    var isLowStock: (ProductResponse) -> Bool {
+    var isLowStock: (ProductsResponse) -> Bool {
         { product in
             product.quantity <= product.lowStockLimit
         }
     }
     
-    var filteredProducts: [ProductResponse] {
+    var filteredProducts: [ProductsResponse] {
         
-        let stockFilteredProducts: [ProductResponse]
+        let stockFilteredProducts: [ProductsResponse]
         
             switch selectedFilter {
             case .all:
                 stockFilteredProducts = allProducts
             case .inStock:
-                stockFilteredProducts = allProducts.filter { $0.quantity > $0.lowStockLimit }
+                stockFilteredProducts = allProducts.filter { $0.stockStatus == .inStock }
             case .lowStock:
-                stockFilteredProducts = allProducts.filter(isLowStock)
+                stockFilteredProducts = allProducts.filter { $0.stockStatus == .lowStock }
             case .outStock:
-                stockFilteredProducts = allProducts.filter{ $0.quantity == 0 }
+                stockFilteredProducts = allProducts.filter{ $0.stockStatus == .outOfStock }
             }
             guard !query.isEmpty else {
                 return stockFilteredProducts
@@ -89,5 +89,10 @@ final class ProductViewModel {
         catch {
             loadMoreError = error.localizedDescription
         }
+    }
+    
+    func loadProductsIfNeeded() async {
+        guard case .idle = state else { return }
+        await loadProducts()
     }
 }

@@ -18,6 +18,9 @@ struct OwnerTabView: View {
     
     var body: some View {
         TabView {
+            
+            //MARK: - Home
+            
             Tab {
                 NavigationStack(path: $homePath) {
                     if let user {
@@ -27,80 +30,59 @@ struct OwnerTabView: View {
                             user: user
                         )
                         .navigationDestination(for: HomeRoute.self) { route in
-                            switch route {
-                            case .lowStock:
-                                LowStockView(
-                                    viewModel: dependencies.makeLowStockViewModel(), path: $homePath
-                                )
-                                
-                            case .salesHistory:
-                                SalesHistoryView(viewModel: dependencies.makeSalesHistoryViewModel())
-                            }
+                            HomeDestinationView(
+                                route: route,
+                                dependencies: dependencies,
+                                path: $homePath,
+                            )
                         }
                         .navigationDestination(for: ProductRoute.self) { route in
-                            switch route {
-                            case .productDetail(let product):
-                                ProductDetailView(
-                                    viewModel: dependencies.makeProductDetailViewModel(product: product),
-                                    path: $homePath
-                                )
-                            case .editProduct(let product):
-                                   AddProductView(
-                                       viewModel: dependencies.makeAddProductViewModel(
-                                           product: product
-                                       ),
-                                       path: $homePath
-                                   )
-
-                            default:
-                                EmptyView()
-                            }
+                            ProductDestinationView(
+                                route: route,
+                                dependencies: dependencies,
+                                path: $homePath,
+                                canManageProducts: true
+                            )
                         }
                     }
                 }
                 
-            }label: {
+            } label: {
                 Image(.homeIcon)
                     .renderingMode(.template)
                 Text("Home")
             }
+            
+            //MARK: - Products
+            
             Tab {
                 NavigationStack(
                     path: $productPath
                 ) {
-                    OwnerProductsView(
-                        dependencies: dependencies,
+                    ProductsView(
                         viewModel: dependencies.makeProductViewModel(),
                         path: $productPath,
+                        canManageProducts: true
                     )
                     .navigationDestination(
                         for: ProductRoute.self
                     ) { route in
-                        switch route {
-                        case .addProduct:
-                            AddProductView(
-                                viewModel: dependencies.makeAddProductViewModel(),
-                                path: $productPath
-                            )
-                        case .productDetail(
-                            let product
-                        ):
-                            ProductDetailView(viewModel: dependencies.makeProductDetailViewModel(product: product), path: $productPath)
-                        case .editProduct(
-                            let product
-                        ):
-                            AddProductView(
-                                viewModel: dependencies.makeAddProductViewModel(product: product),
-                                path: $productPath
-                            )
-                        }
+                        ProductDestinationView(
+                            route: route,
+                            dependencies: dependencies,
+                            path: $productPath,
+                            canManageProducts: true
+                        )
                     }
                 }
-            }label: {
+            } label: {
                 Image(.productsIcon)
                     .renderingMode(.template)
                 Text("Products")
             }
+            
+            //MARK: - Team
+            
             Tab {
                 NavigationStack(path: $teamPath) {
                     TeamView(path: $teamPath, viewModel: dependencies.makeTeamViewModel())
@@ -111,11 +93,13 @@ struct OwnerTabView: View {
                             }
                         }
                 }
-            }label: {
+            } label: {
                 Image(.teamIcon)
                     .renderingMode(.template)
                 Text("Team")
             }
+            
+            //MARK: - Profile
             
             Tab {
                 NavigationStack {
@@ -125,7 +109,7 @@ struct OwnerTabView: View {
                         appStateManager: appStateManager
                     )
                 }
-            }label: {
+            } label: {
                 Image(.profileIcon)
                     .renderingMode(.template)
                 Text("Profile")
@@ -133,6 +117,7 @@ struct OwnerTabView: View {
             }
         }
     }
+
 }
 #Preview {
     let dependencies = AppDependencies()

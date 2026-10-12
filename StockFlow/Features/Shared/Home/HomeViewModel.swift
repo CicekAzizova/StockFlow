@@ -78,7 +78,7 @@ final class HomeViewModel {
         productStore.lowStockCount
     }
     
-    var lowStockProducts: [ProductResponse] {
+    var lowStockProducts: [ProductsResponse] {
         productStore.lowStockProducts
     }
     

@@ -9,6 +9,6 @@ import Foundation
 
 enum ProductRoute: Hashable {
     case addProduct
-    case productDetail(ProductResponse)
-    case editProduct(ProductResponse)
+    case productDetail(ProductsResponse)
+    case editProduct(ProductsResponse)
 }

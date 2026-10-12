@@ -11,8 +11,9 @@ struct ProductDetailView: View {
     
     @Binding var path: NavigationPath
     @State private var showingDeleteConfirmation = false
+    private let canManageProducts: Bool
     
-    private var product: ProductResponse {
+    private var product: ProductsResponse {
         viewModel.product
     }
     
@@ -21,10 +22,13 @@ struct ProductDetailView: View {
     }
     init(
         viewModel: ProductDetailViewModel,
-        path: Binding<NavigationPath>
+        path: Binding<NavigationPath>,
+        canManageProducts: Bool = false
+
     ) {
         _viewModel = State(initialValue: viewModel)
         _path = path
+        self.canManageProducts = canManageProducts
     }
     
     private var imageGallery: some View {
@@ -133,7 +137,7 @@ struct ProductDetailView: View {
                 imageGallery
                 header
                 productInformation
-                actionButtons
+                
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -162,18 +166,6 @@ struct ProductDetailView: View {
         }
     }
     
-    private var actionButtons: some View {
-        Button(role: .destructive) {
-                    showingDeleteConfirmation = true
-                } label: {
-                    Text("Delete Product")
-                        .font(.inter(.regular, size: 15))
-                        .foregroundStyle(.red)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 40)
-                }
-    }
-    
     var body: some View {
         ZStack {
             Color.background
@@ -183,16 +175,26 @@ struct ProductDetailView: View {
             .navigationTitle("\(product.name) details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        path.append(ProductRoute.editProduct(product))
-                    } label: {
-                        Text("Edit")
-                            .foregroundStyle(.textPrimary)
-                            .font(.inter(.bold, size: 16))
+                if canManageProducts {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button {
+                                path.append(ProductRoute.editProduct(product))
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
+
+                            Button(role: .destructive) {
+                                showingDeleteConfirmation = true
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .foregroundStyle(.textPrimary)
+                        }
                     }
                 }
-                
             }
     }
     

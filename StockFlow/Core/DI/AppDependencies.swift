@@ -101,7 +101,7 @@ final class AppDependencies {
     }
     
     @MainActor
-    func makeAddProductViewModel(product: ProductResponse? = nil) -> AddProductViewModel {
+    func makeAddProductViewModel(product: ProductsResponse? = nil) -> AddProductViewModel {
         AddProductViewModel(productStore: productsStore, imageUploadRepository: imageUploadRepository,
             product: product)
     }
@@ -112,7 +112,7 @@ final class AppDependencies {
     }
     
     @MainActor
-    func makeProductDetailViewModel(product: ProductResponse) -> ProductDetailViewModel {
+    func makeProductDetailViewModel(product: ProductsResponse) -> ProductDetailViewModel {
         ProductDetailViewModel(productStore: productsStore, product: product)
     }
     

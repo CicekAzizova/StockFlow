@@ -53,7 +53,7 @@ final class LowStockViewModel {
         }
     }
 
-    var products: [ProductResponse] {
+    var products: [ProductsResponse] {
         productStore.lowStockProducts
     }
 

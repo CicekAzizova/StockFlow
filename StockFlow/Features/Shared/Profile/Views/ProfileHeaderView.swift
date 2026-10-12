@@ -38,7 +38,7 @@ struct ProfileHeaderView: View {
         }
         
         .padding(24)
-        .background(.white)
+        .background(.surface)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         
     }

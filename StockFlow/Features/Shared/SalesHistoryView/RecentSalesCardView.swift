@@ -34,7 +34,7 @@ struct RecentSalesCardView: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.white)
+        .background(.surface)
         .clipShape(
             RoundedRectangle(cornerRadius: 12)
         )

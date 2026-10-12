@@ -9,7 +9,7 @@ import Foundation
 enum ProductsViewState {
     case idle
     case loading
-    case loaded([ProductResponse])
+    case loaded([ProductsResponse])
     case error(String)
     
     var isLoading: Bool {

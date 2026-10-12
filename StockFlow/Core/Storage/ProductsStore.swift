@@ -24,8 +24,8 @@ final class ProductsStore {
     private var productsPageSize = 10
     private var lowStockPageSize = 10
 
-    var products: [ProductResponse] = []
-    var lowStockProducts: [ProductResponse] = []
+    var products: [ProductsResponse] = []
+    var lowStockProducts: [ProductsResponse] = []
     
     
     // MARK: - Low Stock Pagination
@@ -126,13 +126,13 @@ final class ProductsStore {
         hasMoreLowStock = response.hasNext
     }
 
-    func addProduct(_ request: ProductRequest) async throws -> ProductResponse {
+    func addProduct(_ request: ProductRequest) async throws -> ProductsResponse {
         let response = try await productRepository.createProduct(request)
         try await loadProducts(limit: productsPageSize)
         return response
     }
     
-    func saveProduct(id: Int, request: ProductRequest) async throws -> ProductResponse {
+    func saveProduct(id: Int, request: ProductRequest) async throws -> ProductsResponse {
         let response = try await productRepository.updateProduct(id: id, request: request)
         if let index = products.firstIndex(where: { $0.id == id }) {
             products[index] = response

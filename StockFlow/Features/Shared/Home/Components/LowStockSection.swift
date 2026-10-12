@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LowStockSection: View {
 
-    let products: [ProductResponse]
+    let products: [ProductsResponse]
     
     @Binding var path: NavigationPath
 
