@@ -81,7 +81,7 @@ struct SaleAssociateTabView: View {
                             switch route {
                                 
                             case .scanner:
-                                BarcodeScannerView()
+                                ScanProductView(viewModel: dependencies.makeScanProductViewModel())
                                 //                    case .cart:
                                 //                    case .product(<#T##ProductResponse#>):
                             case .history:

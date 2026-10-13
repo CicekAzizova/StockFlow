@@ -17,14 +17,14 @@ struct StockFlowApp: App {
         let dependencies = AppDependencies()
         self.dependencies = dependencies
         
-        let appStateMenager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
+        let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
         
-        appStateMenager.onLogout = {
+        appStateManager.onLogout = {
             dependencies.productsStore.reset()
             dependencies.salesStore.reset()
         }
         
-        _appStateManager = State(initialValue: appStateMenager)
+        _appStateManager = State(initialValue: appStateManager)
     }
     var body: some Scene {
         WindowGroup {

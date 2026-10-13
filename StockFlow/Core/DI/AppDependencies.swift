@@ -147,4 +147,11 @@ final class AppDependencies {
     func makeLowStockViewModel() -> LowStockViewModel {
         LowStockViewModel(productStore: productsStore)
     }
+    
+    func makeScanProductViewModel() -> ScanProductViewModel {
+        ScanProductViewModel(
+            productRepository: productRepository,
+            salesStore: salesStore
+        )
+    }
 }
