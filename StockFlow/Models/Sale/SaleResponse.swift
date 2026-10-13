@@ -5,7 +5,9 @@
 //  Created by Cicek on 08.10.26.
 //
 
-struct SaleResponse: Decodable {
+import Foundation
+
+struct SaleResponse: Decodable, Hashable {
     let id: Int
     let productId: Int
     let productName: String
@@ -14,7 +16,7 @@ struct SaleResponse: Decodable {
     let totalPrice: Double
     let soldBy: Int?
     let sellerName: String?
-    let createdAt: String
+    let createdAt: Date
 
     enum CodingKeys: String, CodingKey {
         case id

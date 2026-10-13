@@ -41,8 +41,8 @@ struct HomeView: View {
                 )
                 .padding(.vertical,16)
                 RecentSalesSection(sales: viewModel.recentSales, onSeeAll: {
-                    path.append(SalesRoute.history)
-                })
+                    path.append(HomeRoute.salesHistory)
+                }, path: $path)
                 LowStockSection(products: viewModel.lowStockProducts, path: $path)
             }
         }

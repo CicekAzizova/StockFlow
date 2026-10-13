@@ -20,6 +20,17 @@ final class DefaultNetworkService: NetworkService {
     private let session: URLSession
     private let tokenStoring: TokenStoring
     
+    private let decoder: JSONDecoder = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        return decoder
+    }()
+    
     init(session: URLSession = .shared, tokenStoring: TokenStoring) {
         self.session = session
         self.tokenStoring = tokenStoring
@@ -66,7 +77,9 @@ final class DefaultNetworkService: NetworkService {
             break
             
         case 401:
-            throw NetworkError.unauthorized
+            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
+
+            throw NetworkError.unauthorized(message: message)
             
         default:
             let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
@@ -76,7 +89,6 @@ final class DefaultNetworkService: NetworkService {
         }
         
         do {
-            let decoder = JSONDecoder()            
             return try decoder.decode(T.self, from: data)
         } catch {
             throw NetworkError.decodingError(error)
@@ -122,7 +134,8 @@ final class DefaultNetworkService: NetworkService {
             return
 
         case 401:
-            throw NetworkError.unauthorized
+            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
+            throw NetworkError.unauthorized(message: message)
 
         default:
             let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message

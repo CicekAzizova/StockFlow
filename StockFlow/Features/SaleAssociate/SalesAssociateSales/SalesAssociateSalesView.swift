@@ -76,7 +76,7 @@ struct SalesAssociateSalesView: View {
                 
                 RecentSalesSection(
                     sales: viewModel.latestSales,
-                    onSeeAll: { path.append(SalesRoute.history) }
+                    onSeeAll: { path.append(SalesRoute.history) }, path: $path
                 )
             }
             .padding()

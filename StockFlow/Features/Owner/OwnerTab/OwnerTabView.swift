@@ -44,6 +44,9 @@ struct OwnerTabView: View {
                                 canManageProducts: true
                             )
                         }
+                        .navigationDestination(for: SalesRoute.self) { route in
+                            SalesDestinationView(route: route, dependencies: dependencies)
+                        }
                     }
                 }
                 

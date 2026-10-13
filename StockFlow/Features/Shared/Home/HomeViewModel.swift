@@ -83,7 +83,7 @@ final class HomeViewModel {
     }
     
     var recentSales: [SaleResponse] {
-        salesStore.recentSales
+        Array(salesStore.recentSales.prefix(5))
     }
     
     var revenue: Double {

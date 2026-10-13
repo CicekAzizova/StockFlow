@@ -10,6 +10,7 @@ struct RecentSalesSection: View {
     
     let sales: [SaleResponse]
     let onSeeAll: () -> Void
+    @Binding var path: NavigationPath
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -33,7 +34,11 @@ struct RecentSalesSection: View {
             } else {
                 VStack(spacing: 10) {
                     ForEach(sales, id: \.id) { sale in
-                        RecentSalesCardView(sale: sale)
+                        Button {
+                            path.append(SalesRoute.detail(sale))
+                        }label: {
+                            RecentSalesCardView(sale: sale)
+                        }
                     }
                 }
             }

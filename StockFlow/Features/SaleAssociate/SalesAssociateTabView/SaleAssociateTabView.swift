@@ -43,6 +43,10 @@ struct SaleAssociateTabView: View {
                                 path: $homePath
                             )
                         }
+                        .navigationDestination(for: SalesRoute.self) { route in
+                            SalesDestinationView(route: route, dependencies: dependencies)
+                        }
+                        
                         
                     }
                 }
@@ -78,16 +82,7 @@ struct SaleAssociateTabView: View {
                     SalesAssociateSalesView(viewModel: dependencies.makeSalesAssociateSalesViewModel(), path: $salesPath)
                     
                         .navigationDestination(for: SalesRoute.self) { route in
-                            switch route {
-                                
-                            case .scanner:
-                                ScanProductView(viewModel: dependencies.makeScanProductViewModel())
-                                //                    case .cart:
-                                //                    case .product(<#T##ProductResponse#>):
-                            case .history:
-                                SalesHistoryView(viewModel: dependencies.makeSalesHistoryViewModel())
-                                
-                            }
+                            SalesDestinationView(route: route, dependencies: dependencies)
                         }
                 }
                 

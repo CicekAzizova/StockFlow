@@ -14,7 +14,7 @@ enum NetworkError: Error, LocalizedError {
     case decodingError(Error)
     case encodingError
     case unknown(Error)
-    case unauthorized
+    case unauthorized(message: String?)
 
     var errorDescription: String? {
         switch self {
@@ -36,8 +36,8 @@ enum NetworkError: Error, LocalizedError {
         case .unknown(let error):
             return error.localizedDescription
 
-        case .unauthorized:
-            return "Unauthorized request."
+        case .unauthorized(let message):
+            return message ?? "Unauthorized request."
         }
     }
 }
