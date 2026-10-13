@@ -12,10 +12,8 @@ enum ProductsViewState {
     case loaded([ProductsResponse])
     case error(String)
     
-    var isLoading: Bool {
-        if case .loading = self {
-            return true
-        }
-        return false
-    }
+    var isLoaded: Bool {
+          if case .loaded = self { return true }
+          return false
+      }
 }

@@ -10,11 +10,4 @@ enum LowStockViewState {
     case loading
     case loaded
     case error(String)
-    
-    var isLoading: Bool {
-        if case .loading = self {
-            return true
-        }
-        return false
-    }
 }
