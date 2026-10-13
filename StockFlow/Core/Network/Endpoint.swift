@@ -13,7 +13,7 @@ protocol Endpoint {
     var method: HttpMethod { get }
     var queryItems: [URLQueryItem]? { get }
     var httpBody: Encodable? { get }
-    var requiresAuthentication: Bool { get }//token lazimdir  lazim deyil
+    var requiresAuthentication: Bool { get }
 }
 
 extension Endpoint {

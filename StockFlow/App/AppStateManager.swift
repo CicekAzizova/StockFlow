@@ -50,6 +50,9 @@ final class  AppStateManager {
     }
     
     func logout() {
+        
+        guard state == .authenticated else { return }
+        
         do {
             try tokenStorage.deleteToken()
         } catch  {

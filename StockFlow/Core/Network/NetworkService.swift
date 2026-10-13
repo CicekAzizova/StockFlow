@@ -134,8 +134,7 @@ final class DefaultNetworkService: NetworkService {
             return
 
         case 401:
-            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
-            throw NetworkError.unauthorized(message: message)
+            throw unauthorizedError(data: data, endpoint: endpoint)
 
         default:
             let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
@@ -143,6 +142,14 @@ final class DefaultNetworkService: NetworkService {
                 statusCode: httpResponse.statusCode, message: message
             )
         }
+    }
+    //MARL: - Helpers
+    private func unauthorizedError(data: Data, endpoint: Endpoint) -> NetworkError {
+        if endpoint.requiresAuthentication {
+            NotificationCenter.default.post(name: .sessionExpired, object: nil)
+        }
+        let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
+        return .unauthorized(message: message)
     }
 }
 

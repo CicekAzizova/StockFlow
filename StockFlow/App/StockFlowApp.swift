@@ -32,6 +32,11 @@ struct StockFlowApp: App {
                 .task {
                     await appStateManager.readToken()
                 }
+                .task {
+                    for await _ in NotificationCenter.default.notifications(named: .sessionExpired) {
+                        appStateManager.logout()
+                    }
+                }
         }
         
     }

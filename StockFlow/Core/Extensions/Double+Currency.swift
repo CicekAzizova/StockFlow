@@ -13,4 +13,12 @@ extension Double {
                 .locale(Locale(identifier: "en_US"))
         )
     }
+    var asCompactCurrency: String {
+            formatted(
+                .currency(code: "USD")
+                    .locale(Locale(identifier: "en_US"))
+                    .notation(.compactName)
+                    .precision(.fractionLength(0...1))
+            )
+        }
 }
