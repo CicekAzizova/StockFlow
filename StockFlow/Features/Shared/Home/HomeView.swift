@@ -40,7 +40,9 @@ struct HomeView: View {
                     lowStockCount: viewModel.lowStockCount
                 )
                 .padding(.vertical,16)
-                RecentSalesSection(sales: viewModel.recentSales, path: $path)
+                RecentSalesSection(sales: viewModel.recentSales, onSeeAll: {
+                    path.append(SalesRoute.history)
+                })
                 LowStockSection(products: viewModel.lowStockProducts, path: $path)
             }
         }

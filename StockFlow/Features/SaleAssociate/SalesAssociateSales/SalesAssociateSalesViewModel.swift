@@ -21,16 +21,23 @@ final class SalesAssociateSalesViewModel {
     
     func loadSales() async {
         let previousState = state
-        state = .loading
+        
+        if case .loaded = previousState {
+            //
+        } else {
+            state = .loading
+        }
         
         do {
-            try await salesStore.loadSalesSummary()
-            try await salesStore.loadRecentSales(limit: 10)
+            async let summary: () = salesStore.loadSalesSummary()
+            async let sales: () = salesStore.loadRecentSales(limit: 10)
+            _ = try await (summary, sales)
             state = .loaded
-            
-        } catch is CancellationError {
+        }
+        catch is CancellationError {
             state = previousState
-        }catch {
+        }
+        catch {
             state = .error(error.localizedDescription)
         }
     }
@@ -43,11 +50,11 @@ final class SalesAssociateSalesViewModel {
         salesStore.salesSummary?.todaySales ?? 0
     }
     
-    var totalOrders: Int {
-        salesStore.salesSummary?.totalOrders ?? 0
+    var todayOrders: Int {
+        salesStore.salesSummary?.todayOrders ?? 0
     }
-    
-    var recentSales: [SaleResponse] {
-        salesStore.recentSales
+
+    var latestSales: [SaleResponse] {
+        Array(salesStore.recentSales.prefix(5))
     }
 }

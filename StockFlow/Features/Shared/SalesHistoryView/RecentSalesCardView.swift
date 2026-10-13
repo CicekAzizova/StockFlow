@@ -24,11 +24,10 @@ struct RecentSalesCardView: View {
             VStack(alignment: .leading) {
                 Text(sale.productName)
                 
-                Text("\(sale.quantity) × \(sale.unitPrice, specifier: "%.2f") ₼")
-//                format: .currency(code: "USD").presentation(.isoCode)
+                Text("\(sale.quantity) × \(sale.unitPrice.asCurrency)")
             }
             Spacer()
-            Text("\(sale.totalPrice, specifier: "%.2f") ₼")
+            Text(sale.totalPrice.asCurrency)
                 .font(.inter(.semiBold, size: 16))
             
         }

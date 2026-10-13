@@ -29,12 +29,6 @@ final class ProductViewModel {
     var productsCount: Int {
         productStore.productsCount
     }
-
-    var isLowStock: (ProductsResponse) -> Bool {
-        { product in
-            product.quantity <= product.lowStockLimit
-        }
-    }
     
     var filteredProducts: [ProductsResponse] {
         

@@ -48,8 +48,6 @@ final class TeamViewModel {
     }
     
     var totalSales: Double {
-        salesAssociates.reduce(0) {
-            $0 + $1.totalSalesThisMonth
-        }
+        salesAssociates.first?.totalSalesThisMonth ?? 0
     }
 }

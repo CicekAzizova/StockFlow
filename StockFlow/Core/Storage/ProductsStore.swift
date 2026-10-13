@@ -144,6 +144,8 @@ final class ProductsStore {
         try await productRepository.deleteProduct(id: id)
         
         products.removeAll { $0.id == id }
+        lowStockProducts.removeAll { $0.id == id }
+        totalProducts = max(0, totalProducts - 1)
         
     }
 
@@ -157,10 +159,4 @@ final class ProductsStore {
         totalLowProducts
     }
 
-    var totalQuantity: Int {
-        products.reduce(0) {//toplama
-            $0 + $1.quantity
-        }
-        
-    }
 }

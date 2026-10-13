@@ -21,14 +21,14 @@ struct HomeSummaryGrid: View {
             GridRow {
                 SummaryGridView(
                     title: "Today's sales",
-                    value: "\(todaySales)",
+                    value: todaySales.asCurrency,
                     icon: "chart.bar",
                     iconColor: .brandPrimary
                 )
 
                 SummaryGridView(
                     title: "Revenue",
-                    value: "\(totalSales)",
+                    value: totalSales.asCurrency,
                     icon: "dollarsign.circle",
                     iconColor: .success
                 )

@@ -38,8 +38,7 @@ struct SalesAssociateInfoCardView: View {
                     Text("Today's Sales")
                         .foregroundStyle(.textPrimary)
                     Text(
-                        price,
-                        format: .currency(code: "USD")
+                        price.asCurrency
                     )
                     
                     .foregroundStyle(.textSecondary)                }

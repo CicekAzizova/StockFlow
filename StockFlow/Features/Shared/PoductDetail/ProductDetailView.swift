@@ -16,10 +16,6 @@ struct ProductDetailView: View {
     private var product: ProductsResponse {
         viewModel.product
     }
-    
-    private var isLowStock: Bool {
-        product.quantity <= product.lowStockLimit
-    }
     init(
         viewModel: ProductDetailViewModel,
         path: Binding<NavigationPath>,
@@ -93,7 +89,6 @@ struct ProductDetailView: View {
                 title: "Discount",
                 value: product.discount.formatted(.number.precision(.fractionLength(0))) + "%"
             )
-
             informationRow(
                 title: "Current stock",
                 value: "\(product.quantity) units"

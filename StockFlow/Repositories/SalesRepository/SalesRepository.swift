@@ -9,11 +9,11 @@ import Foundation
 
 protocol SalesRepository {
     func getSalesSummary() async throws -> SalesSummaryResponse
-    func getMySales() async throws -> [MySaleResponse]
     func getRecentSales(
             page: Int,
             limit: Int
         ) async throws -> PaginationResponse<SaleResponse>
+    func createSale(_ request: CreateSaleRequest) async throws -> CreateSaleResponse
 
 }
 final class DefaultSalesRepository: SalesRepository {
@@ -26,11 +26,11 @@ final class DefaultSalesRepository: SalesRepository {
     func getSalesSummary() async throws -> SalesSummaryResponse{
         return try await networkService.request(SalesEndpoint.summary)
     }
-    func getMySales() async throws -> [MySaleResponse] {
-        return try await networkService.request(SalesEndpoint.mySales)
-    }
     
     func getRecentSales(page: Int, limit: Int) async throws -> PaginationResponse<SaleResponse> {
         try await networkService.request(SalesEndpoint.recentSales(page: page, limit: limit))
+    }
+    func createSale(_ request: CreateSaleRequest) async throws -> CreateSaleResponse {
+        try await networkService.request(SalesEndpoint.createSale(request))
     }
 }

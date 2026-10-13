@@ -7,30 +7,32 @@
 import SwiftUI
 
 struct RecentSalesSection: View {
-
+    
     let sales: [SaleResponse]
-    @Binding var path: NavigationPath
-
+    let onSeeAll: () -> Void
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Recent Sales")
                     .font(.inter(.bold, size: 18))
                 Spacer()
-                
-                Button("See All") {
-                    path.append(HomeRoute.salesHistory)
+                if !sales.isEmpty {
+                    Button("See All", action: onSeeAll)
+                        .font(.inter(.medium, size: 13))
+                        .foregroundStyle(.primaryBlue)
                 }
-                .font(.inter(.medium, size: 13))
-                .foregroundStyle(.primaryBlue)
             }
             
-            LazyVStack {
-                ForEach(sales, id: \.id) { sale in
-                    Button {
-                        
-                        //
-                    }label: {
+            if sales.isEmpty {
+                Text("No sales yet")
+                    .font(.inter(.regular, size: 14))
+                    .foregroundStyle(.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+            } else {
+                VStack(spacing: 10) {
+                    ForEach(sales, id: \.id) { sale in
                         RecentSalesCardView(sale: sale)
                     }
                 }

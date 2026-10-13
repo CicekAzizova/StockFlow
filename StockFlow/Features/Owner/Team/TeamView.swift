@@ -52,14 +52,14 @@ struct TeamView: View {
                         )
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
-
+                    
                     Section {
                         ForEach(salesAssociates, id: \.id) { associate in
                             SalesAssociateInfoCardView(
                                 name: associate.name,
                                 surname: associate.surname,
                                 todaySalesText: "Today's sales",
-                                price: associate.totalSalesThisMonth
+                                price: associate.todaySales
                             )
                             .listRowInsets(
                                 EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
@@ -96,7 +96,7 @@ struct TeamView: View {
         }
     }
     
-   private var header: some View {
+    private var header: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("Team")
@@ -119,7 +119,7 @@ struct TeamView: View {
         }
     }
     
-   private var teamStatsView: some View {
+    private var teamStatsView: some View {
         HStack {
             VStack {
                 Text("\(viewModel.salesAssociateCount)")
@@ -130,8 +130,7 @@ struct TeamView: View {
                 .background(.divider)
             
             VStack {
-                Text(viewModel.totalSales,
-                     format: .currency(code: "USD").presentation(.isoCode))
+                Text(viewModel.totalSales.asCurrency)
                 Text("Total Sales (This Month)")
             }
         }
@@ -141,5 +140,5 @@ struct TeamView: View {
         .background(.success.opacity(0.2))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
-        
+    
 }

@@ -26,8 +26,7 @@ struct SummaryCardView: View {
                     .font(.inter(.regular, size: 12))
                     .foregroundStyle(.textSecondary)
                 Text(
-                    product.price,
-                    format: .currency(code: "USD").presentation(.isoCode)
+                    product.price.asCurrency
                 )
                     .font(.inter(.bold, size: 14))
                     .foregroundStyle(.primaryBlue)
