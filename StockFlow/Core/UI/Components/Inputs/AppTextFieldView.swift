@@ -19,6 +19,7 @@ struct AppTextFieldView<FocusedField: Hashable>: View {
     var keyboardType: UIKeyboardType = .default
     var submitLabel: SubmitLabel = .next
     var onSubmit: (() -> Void)? = nil
+    var iconAction: (() -> Void)? = nil 
 
     @Binding var text: String
 
@@ -41,8 +42,16 @@ struct AppTextFieldView<FocusedField: Hashable>: View {
                     .foregroundStyle(.textPrimary)
 
                 if let icon {
-                    Image(systemName: icon)
-                        .foregroundStyle(.icon)
+                    if let iconAction {
+                        Button(action: iconAction) {
+                            Image(systemName: icon)
+                                .foregroundStyle(.icon)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Image(systemName: icon)
+                            .foregroundStyle(.icon)
+                    }
                 }
             }
             .padding(.horizontal, 12)

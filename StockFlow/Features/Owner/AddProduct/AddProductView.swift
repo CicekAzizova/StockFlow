@@ -9,17 +9,18 @@
 import SwiftUI
 
 struct AddProductView: View {
-
+    
     @State private var viewModel: AddProductViewModel
     @FocusState private var focusField: AddProductFocusedField?
     @Binding var path: NavigationPath
-
+    @State private var showScanner = false
+    
     let product: ProductsResponse?
-
+    
     private var isEditMode: Bool {
         viewModel.product != nil
     }
-
+    
     init(
         viewModel: AddProductViewModel,
         path: Binding<NavigationPath>
@@ -28,42 +29,57 @@ struct AddProductView: View {
         self.product = viewModel.product
         self._path = path
     }
-
+    
     var body: some View {
         ZStack {
             Color.background
                 .ignoresSafeArea()
-
+            
             content
         }
         .navigationTitle(isEditMode ? "Edit Product" : "Add Product")
         .navigationBarTitleDisplayMode(.inline)
+        .fullScreenCover(isPresented: $showScanner) {
+                NavigationStack {
+                    BarcodeInputView(showsManualEntry: false) { code in
+                        viewModel.sku = code
+                        showScanner = false
+                    }
+                    .navigationTitle("Scan SKU")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") { showScanner = false }
+                        }
+                    }
+                }
+            }
     }
-
+    
     // MARK: - Add Product Screen
-
+    
     private var addProductScreen: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
                 header
-
+                
                 AddProductImageView(viewModel: viewModel)
-
+                
                 form
-
+                
                 addProductButton
             }
             .padding(.horizontal, 24)
         }
     }
-
+    
     // MARK: - Header
-
+    
     private var header: some View {
         VStack(alignment: .leading) {
             Text(isEditMode ? "Edit product information" : "Product information")
                 .font(.inter(.regular, size: 20))
-
+            
             Text(
                 isEditMode
                 ? "Update the details of your product."
@@ -73,154 +89,70 @@ struct AddProductView: View {
         }
         .padding(.bottom, 16)
     }
-
+    
     // MARK: - Form
-
-    @ViewBuilder
-    private var form: some View {
-
+    
+    private func field(
+        _ title: String,
+        _ placeholder: String,
+        _ focus: AddProductFocusedField,
+        next: AddProductFocusedField?,
+        keyboard: UIKeyboardType = .default,
+        icon: String? = nil,
+        iconAction: (() -> Void)? = nil,
+        text: Binding<String>
+    ) -> some View {
         AppTextFieldView(
-            title: "Product name",
-            placeholder: "Enter Product name",
-            icon: nil,
-            focusedField: .name,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .sku
-            },
-            text: $viewModel.name,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "SKU",
-            placeholder: "Enter unique SKU",
-            icon: nil,
-            focusedField: .sku,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .category
-            },
-            text: $viewModel.sku,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Category",
-            placeholder: "Enter product category",
-            icon: nil,
-            focusedField: .category,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .description
-            },
-            text: $viewModel.category,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Description",
-            placeholder: "Enter product description",
-            icon: nil,
-            focusedField: .description,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .price
-            },
-            text: $viewModel.description,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Price",
-            placeholder: "Enter product price",
-            icon: nil,
-            focusedField: .price,
-            keyboardType: .decimalPad,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .discount
-            },
-            text: $viewModel.price,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Discount",
-            placeholder: "Enter discount",
-            icon: nil,
-            focusedField: .discount,
-            keyboardType: .decimalPad,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .costPrice
-            },
-            text: $viewModel.discount,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Cost price",
-            placeholder: "Enter cost price",
-            icon: nil,
-            focusedField: .costPrice,
-            keyboardType: .decimalPad,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .quantity
-            },
-            text: $viewModel.costPrice,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Quantity",
-            placeholder: "Enter quantity",
-            icon: nil,
-            focusedField: .quantity,
-            keyboardType: .numberPad,
-            submitLabel: .next,
-            onSubmit: {
-                focusField = .lowStockLimit
-            },
-            text: $viewModel.quantity,
-            focusedFieldBinding: $focusField
-        )
-
-        AppTextFieldView(
-            title: "Low stock limit",
-            placeholder: "Enter low stock limit",
-            icon: nil,
-            focusedField: .lowStockLimit,
-            keyboardType: .numberPad,
-            submitLabel: .done,
-            onSubmit: {
-                focusField = nil
-            },
-            text: $viewModel.lowStockLimit,
+            title: title,
+            placeholder: placeholder,
+            icon: icon,
+            focusedField: focus,
+            keyboardType: keyboard,
+            submitLabel: next == nil ? .done : .next,
+            onSubmit: { focusField = next },
+            iconAction: iconAction,
+            text: text,
             focusedFieldBinding: $focusField
         )
     }
-
+    
+    @ViewBuilder
+    private var form: some View {
+        field("Product name", "Enter Product name", .name, next: .sku, text: $viewModel.name)
+        field(
+            "SKU", "Enter unique SKU", .sku, next: .category,
+            icon: "barcode.viewfinder",
+            iconAction: { showScanner = true },
+            text: $viewModel.sku
+        )
+        field("Category", "Enter product category", .category, next: .description, text: $viewModel.category)
+        field("Description", "Enter product description", .description, next: .price, text: $viewModel.description)
+        field("Price", "Enter product price", .price, next: .discount, keyboard: .decimalPad, text: $viewModel.price)
+        field("Discount", "Enter discount", .discount, next: .costPrice, keyboard: .decimalPad, text: $viewModel.discount)
+        field("Cost price", "Enter cost price", .costPrice, next: .quantity, keyboard: .decimalPad, text: $viewModel.costPrice)
+        field("Quantity", "Enter quantity", .quantity, next: .lowStockLimit, keyboard: .numberPad, text: $viewModel.quantity)
+        field("Low stock limit", "Enter low stock limit", .lowStockLimit, next: nil, keyboard: .numberPad, text: $viewModel.lowStockLimit)
+    }
+    
     // MARK: - Add / Save Button
-
+    
     private var addProductButton: some View {
         VStack(spacing: 8) {
-
+            
             if let message = viewModel.validationMessage {
                 Text(message)
                     .font(.inter(.regular, size: 13))
                     .foregroundStyle(.error)
                     .multilineTextAlignment(.center)
             }
-
+            
             if case .error(let message) = viewModel.state {
                 Text(message)
                     .font(.inter(.regular, size: 13))
                     .foregroundStyle(.error)
                     .multilineTextAlignment(.center)
             }
-
+            
             AppButtonView(
                 title: isEditMode ? "Save Product" : "Add Product",
                 isLoading: viewModel.state.isLoading,
@@ -233,33 +165,33 @@ struct AddProductView: View {
         }
         .padding(.top, 16)
     }
-
+    
     // MARK: - Submit Product
-
+    
     @MainActor
     private func submitProduct() async {
-
+        
         await viewModel.saveProduct()
-
+        
         if case .success = viewModel.state {
-
+            
             if !path.isEmpty {
                 path.removeLast()
             }
         }
     }
-
+    
     // MARK: - Content State
-
+    
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
         case .idle, .loading:
             addProductScreen
-
+            
         case .success:
             Color.clear
-
+            
         case .error:
             addProductScreen
         }

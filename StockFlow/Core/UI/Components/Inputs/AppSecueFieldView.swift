@@ -1,5 +1,5 @@
 //
-//  AppSecueFieldView.swift
+//  AppSecureFieldView.swift
 //  StockFlow
 //
 //  Created by Cicek on 22.09.26.
@@ -17,7 +17,7 @@ struct AppSecureFieldView<FocusedField: Hashable>: View {
     
     @Binding var text: String
     
-    var focusedFieldBinding: FocusState<FocusedField?>.Binding//focsun hansinda oldugunu oxuyur
+    var focusedFieldBinding: FocusState<FocusedField?>.Binding
     
     @State private var isAppear = false
     
