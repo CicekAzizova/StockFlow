@@ -21,7 +21,8 @@ struct RecentSalesSection: View {
                 if !sales.isEmpty {
                     Button("See All", action: onSeeAll)
                         .font(.inter(.medium, size: 13))
-                        .foregroundStyle(.primaryBlue)
+                        .foregroundStyle(.seeAllButton)
+                        .padding(.trailing, 8)
                 }
             }
             

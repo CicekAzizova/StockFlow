@@ -12,12 +12,14 @@ struct HomeSummaryGrid: View {
     let totalSales: Double
     let productsCount: Int
     let lowStockCount: Int
+    
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
 
     var body: some View {
-        Grid(
-            horizontalSpacing: 16,
-            verticalSpacing: 16
-        ) {
+        LazyVGrid(columns: columns, spacing: 16) {
             GridRow {
                 SummaryGridView(
                     title: "Today's sales",

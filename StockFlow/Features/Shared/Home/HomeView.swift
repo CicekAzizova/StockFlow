@@ -32,7 +32,7 @@ struct HomeView: View {
                 ? "Owner access • Full store management"
                 : "Sales Associate access • Sales operations"
             )
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 HomeSummaryGrid(
                     todaySales: viewModel.todaySales,
                     totalSales: viewModel.revenue,

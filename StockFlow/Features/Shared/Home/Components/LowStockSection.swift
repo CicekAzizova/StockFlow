@@ -24,7 +24,8 @@ struct LowStockSection: View {
                     path.append(HomeRoute.lowStock)
                 }
                 .font(.inter(.medium, size: 13))
-                .foregroundStyle(.primaryBlue)
+                .foregroundStyle(.seeAllButton)
+                .padding(.trailing, 8)
             }
             LazyVStack {
                 ForEach(products, id: \.id) { product in

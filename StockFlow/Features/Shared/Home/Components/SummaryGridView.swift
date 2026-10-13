@@ -12,6 +12,23 @@ struct SummaryGridView: View {
     let value: String
     let icon: String
     let iconColor: Color
+    var compactValue: String? = nil
+    
+    init(title: String, amount: Double, icon: String, iconColor: Color) {
+        self.title = title
+        self.value = amount.asCurrency
+        self.compactValue = amount.asCompactCurrency
+        self.icon = icon
+        self.iconColor = iconColor
+    }
+    
+    init(title: String, value: String, icon: String, iconColor: Color) {
+        self.title = title
+        self.value = value
+        self.compactValue = nil
+        self.icon = icon
+        self.iconColor = iconColor
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -23,9 +40,11 @@ struct SummaryGridView: View {
                 .clipShape(Circle())
             
             VStack(alignment: .leading, spacing: 4) {
-                Text(value)
-                    .font(.inter(.extraBold, size: 24))
-                    .foregroundStyle(.primary)
+                ViewThatFits(in: .horizontal){
+                    amountText(value)
+                    amountText(compactValue ?? value)
+                    
+                }
                 
                 Text(title)
                     .font(.inter(.regular, size: 12))
@@ -45,6 +64,14 @@ struct SummaryGridView: View {
                 .stroke(.gray.opacity(0.15), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.05), radius: 8)
+    }
+    
+    private func amountText(_ text: String) -> some View {
+        Text(text)
+            .font(.inter(.extraBold, size: 22))
+            .foregroundStyle(.primary)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
     }
     
 }

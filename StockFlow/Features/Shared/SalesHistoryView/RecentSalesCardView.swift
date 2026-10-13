@@ -26,9 +26,11 @@ struct RecentSalesCardView: View {
                 
                 Text("\(sale.quantity) × \(sale.unitPrice.asCurrency)")
             }
+            .foregroundStyle(.textPrimary)
             Spacer()
             Text(sale.totalPrice.asCurrency)
                 .font(.inter(.semiBold, size: 16))
+                .foregroundStyle(.brandPrimary)
             
         }
         .padding()
