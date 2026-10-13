@@ -40,6 +40,7 @@ struct RecentSalesSection: View {
                         }label: {
                             RecentSalesCardView(sale: sale)
                         }
+                        .buttonStyle(.plain)
                     }
                 }
             }

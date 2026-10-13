@@ -20,23 +20,20 @@ struct HomeSummaryGrid: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 16) {
-            GridRow {
                 SummaryGridView(
                     title: "Today's sales",
-                    value: todaySales.asCurrency,
+                    amount: todaySales,
                     icon: "chart.bar",
                     iconColor: .brandPrimary
                 )
 
                 SummaryGridView(
                     title: "Revenue",
-                    value: totalSales.asCurrency,
+                    amount: totalSales,
                     icon: "dollarsign.circle",
                     iconColor: .success
                 )
-            }
 
-            GridRow {
                 SummaryGridView(
                     title: "Total products",
                     value: "\(productsCount)",
@@ -50,7 +47,6 @@ struct HomeSummaryGrid: View {
                     icon: "exclamationmark.triangle",
                     iconColor: .warning
                 )
-            }
         }
     }
 }

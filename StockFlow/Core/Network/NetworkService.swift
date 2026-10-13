@@ -77,9 +77,7 @@ final class DefaultNetworkService: NetworkService {
             break
             
         case 401:
-            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
-
-            throw NetworkError.unauthorized(message: message)
+            throw unauthorizedError(data: data, endpoint: endpoint)
             
         default:
             let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message

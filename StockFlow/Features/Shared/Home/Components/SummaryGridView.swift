@@ -42,8 +42,12 @@ struct SummaryGridView: View {
             VStack(alignment: .leading, spacing: 4) {
                 ViewThatFits(in: .horizontal){
                     amountText(value)
-                    amountText(compactValue ?? value)
+                        .fixedSize(horizontal: true, vertical: false)
                     
+                    amountText(compactValue ?? value)
+                        .fixedSize(horizontal: true, vertical: false)
+                    amountText(compactValue ?? value)
+                        .minimumScaleFactor(0.5)
                 }
                 
                 Text(title)

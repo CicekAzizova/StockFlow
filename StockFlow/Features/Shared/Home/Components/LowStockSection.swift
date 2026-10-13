@@ -35,6 +35,7 @@ struct LowStockSection: View {
                     }label: {
                         SummaryCardView(product: product)
                     }
+                    .buttonStyle(.plain)
                         
                 }
             }
