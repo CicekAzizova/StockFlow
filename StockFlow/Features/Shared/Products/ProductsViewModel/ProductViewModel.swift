@@ -55,7 +55,10 @@ final class ProductViewModel {
     
     func loadProducts() async {
         let previousState = state
-        state = .loading
+        
+        if !state.isLoaded {
+            state = .loading
+        }
         do {
             try await productStore.loadProducts(limit: 10)
             state = .loaded(allProducts)

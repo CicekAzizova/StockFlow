@@ -7,15 +7,6 @@
 
 import Foundation
 
-enum ScanProductState {
-    case scanning
-    case loading
-    case found(ProductsResponse)
-    case saleCompleted(total: Double)
-    case notFound(String)
-    case error(String)
-}
-
 @Observable
 @MainActor
 final class ScanProductViewModel {

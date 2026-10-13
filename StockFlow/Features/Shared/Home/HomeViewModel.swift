@@ -26,7 +26,11 @@ final class HomeViewModel {
     
     func loadHome() async {
         let previousState = state
-        state = .loading
+        
+        if !state.isLoaded {
+            state = .loading
+        }
+        
         do   {
             async let loadProducts: () = loadProducts()
             async let loadLowStock: () = loadLowStock()
@@ -59,13 +63,13 @@ final class HomeViewModel {
     }
     
     func loadRecentSales() async throws {
-       try await salesStore.loadRecentSales(limit: 5)
+        try await salesStore.loadRecentSales(limit: 5)
     }
     
     func loadSalesSummary() async throws {
         try await salesStore.loadSalesSummary()
     }
-   
+    
     func refresh() async {
         await loadHome()
     }
@@ -73,7 +77,7 @@ final class HomeViewModel {
     var productsCount: Int {
         productStore.productsCount
     }
-
+    
     var lowStockCount: Int {
         productStore.lowStockCount
     }
@@ -93,5 +97,5 @@ final class HomeViewModel {
     var todaySales: Double {
         salesStore.salesSummary?.todaySales ?? 0
     }
-
+    
 }
