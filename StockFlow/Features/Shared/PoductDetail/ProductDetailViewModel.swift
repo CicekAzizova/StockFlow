@@ -13,14 +13,17 @@ import Foundation
 final class ProductDetailViewModel {
     
     private let productStore: ProductsStore
+    private let initialProduct: ProductsResponse
     
-    let product: ProductsResponse
+    var product: ProductsResponse {
+        productStore.products.first { $0.id == initialProduct.id } ?? initialProduct
+    }
     
     var state: ProductDetailViewState = .idle
 
     init(productStore: ProductsStore, product: ProductsResponse) {
         self.productStore = productStore
-        self.product = product
+        self.initialProduct = product
         
         
     }
