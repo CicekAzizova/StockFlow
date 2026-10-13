@@ -10,7 +10,7 @@ import Foundation
 enum NetworkError: Error, LocalizedError {
     case invalidUrl
     case invalidResponse
-    case serverError(statusCode: Int)
+    case serverError(statusCode: Int, message: String?)
     case decodingError(Error)
     case encodingError
     case unknown(Error)
@@ -24,8 +24,8 @@ enum NetworkError: Error, LocalizedError {
         case .invalidResponse:
             return "Invalid server response."
 
-        case .serverError(let statusCode):
-            return "Server error. Status code: \(statusCode)"
+        case .serverError(let statusCode, let message):
+            return message ?? "Server error. Status code: \(statusCode)"
 
         case .decodingError(let error):
             return "Decoding error: \(error.localizedDescription)"

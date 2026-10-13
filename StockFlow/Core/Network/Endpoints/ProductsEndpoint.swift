@@ -12,7 +12,7 @@ enum ProductsEndpoint: Endpoint {
     case createProduct(ProductRequest)
     case getProducts(page: Int, limit: Int)
     case getLowStockProducts(page: Int, limit: Int)
-    case search(query: String)
+    case productBySku(String)
     case editProduct(id: Int, request: ProductRequest)
     case deleteProduct(id: Int)
     
@@ -22,8 +22,8 @@ enum ProductsEndpoint: Endpoint {
             "/products"
         case .getProducts:
             "/products"
-        case .search:
-            "/products"
+        case .productBySku:
+             "/products/by-sku"
         case .editProduct(let id,_):
             "/products/\(id)"
         case .deleteProduct(let id):
@@ -36,17 +36,13 @@ enum ProductsEndpoint: Endpoint {
     var method: HttpMethod {
         switch self {
         case .createProduct:
-                .post
-        case .getProducts:
-                .get
-        case .search:
-                .get
+            return .post
+        case .getProducts, .getLowStockProducts, .productBySku:
+            return .get
         case .editProduct:
-                .put
+            return .put
         case .deleteProduct:
-                .delete
-        case .getLowStockProducts:
-                .get
+            return .delete
         }
     }
     
@@ -58,39 +54,25 @@ enum ProductsEndpoint: Endpoint {
         switch self {
         case .createProduct(let request):
             return request
-        case .getProducts:
-            return nil
-        case .search:
-            return nil
         case .editProduct(_, let request):
             return request
-        case .deleteProduct:
-            return nil
-        case .getLowStockProducts:
+        case .getProducts, .getLowStockProducts, .productBySku, .deleteProduct:
             return nil
         }
     }
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .createProduct:
-            return nil
-        case .editProduct:
-            return nil
-        case .deleteProduct:
-            return nil
-        case .search(let query):
-            return [URLQueryItem(name: "query", value: query)]
-        case .getProducts(let page,let limit):
-             return [
-                URLQueryItem(name: "page", value: String(page)),
-                URLQueryItem(name: "limit",value: String(limit))
-            ]
-        case .getLowStockProducts(let page,let limit):
+        case .getProducts(let page, let limit),
+                .getLowStockProducts(let page, let limit):
             return [
                 URLQueryItem(name: "page", value: String(page)),
                 URLQueryItem(name: "limit", value: String(limit))
             ]
+        case .productBySku(let sku):
+            return [URLQueryItem(name: "sku", value: sku)]
+        case .createProduct, .editProduct, .deleteProduct:
+            return nil
         }
     }
 }

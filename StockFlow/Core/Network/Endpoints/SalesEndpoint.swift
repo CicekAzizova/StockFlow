@@ -9,22 +9,25 @@ import Foundation
 enum SalesEndpoint: Endpoint {
 
     case summary
-    case mySales
     case recentSales(page: Int,limit: Int)
+    case createSale(CreateSaleRequest)
 
     var path: String {
         switch self {
         case .summary:
             "/sales/summary"
-        case .mySales:
-            "/sales/my-sales"
-        case .recentSales:
+        case .recentSales, .createSale:
             "/sales"
         }
     }
 
     var method: HttpMethod {
-        .get
+        switch self {
+        case .createSale:
+            return .post
+        case .summary, .recentSales:
+            return .get
+        }
     }
 
     var requiresAuthentication: Bool {
@@ -32,12 +35,16 @@ enum SalesEndpoint: Endpoint {
     }
 
     var httpBody: (any Encodable)? {
-        nil
+        switch self {
+        case .createSale(let request):
+            return request
+        case .summary, .recentSales:
+            return nil
+        }
     }
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .summary,
-                .mySales:
+        case .summary, .createSale:
             nil
             
         case .recentSales(let page, let limit):

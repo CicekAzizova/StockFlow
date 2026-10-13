@@ -12,8 +12,8 @@ struct SaleResponse: Decodable {
     let quantity: Int
     let unitPrice: Double
     let totalPrice: Double
-    let soldBy: Int
-    let sellerName: String
+    let soldBy: Int?
+    let sellerName: String?
     let createdAt: String
 
     enum CodingKeys: String, CodingKey {
@@ -28,3 +28,5 @@ struct SaleResponse: Decodable {
         case createdAt = "created_at"
     }
 }
+
+

@@ -87,4 +87,14 @@ final class SalesStore {
     func loadSalesSummary() async throws {
         salesSummary = try await salesRepository.getSalesSummary()
     }
+    
+    func createSale(productId: Int, quantity: Int) async throws -> CreateSaleResponse {
+        let response = try await salesRepository.createSale(
+            CreateSaleRequest(productId: productId, quantity: quantity)
+        )
+        try? await loadRecentSales(limit: salesPageSize)
+        try? await loadSalesSummary()
+
+        return response
+    }
 }

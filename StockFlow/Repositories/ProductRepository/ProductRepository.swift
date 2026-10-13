@@ -9,7 +9,7 @@ import Foundation
 protocol ProductRepository {
     func createProduct(_ request: ProductRequest) async throws -> ProductsResponse
     func getProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductsResponse>
-    func searchProducts(_ query: String) async throws -> [ProductsResponse]
+    func getProduct(bySku sku: String) async throws -> ProductsResponse
     func updateProduct(id: Int, request: ProductRequest) async throws -> ProductsResponse
     func deleteProduct(id: Int) async throws
     func getLowStockProducts(page: Int, limit: Int) async throws -> PaginationResponse<ProductsResponse>
@@ -31,8 +31,8 @@ final class DefaultProductRepository: ProductRepository {
         try await networkService.request(ProductsEndpoint.getProducts(page: page, limit: limit))
     }
     
-    func searchProducts(_ query: String) async throws -> [ProductsResponse] {
-        try await networkService.request(ProductsEndpoint.search(query: query))
+    func getProduct(bySku sku: String) async throws -> ProductsResponse {
+        try await networkService.request(ProductsEndpoint.productBySku(sku))
     }
     
     func updateProduct(id: Int, request: ProductRequest) async throws -> ProductsResponse {

@@ -69,8 +69,9 @@ final class DefaultNetworkService: NetworkService {
             throw NetworkError.unauthorized
             
         default:
+            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
             throw NetworkError.serverError(
-                statusCode: httpResponse.statusCode
+                statusCode: httpResponse.statusCode, message: message
             )
         }
         
@@ -103,11 +104,11 @@ final class DefaultNetworkService: NetworkService {
                 forHTTPHeaderField: "Authorization"
             )
         }
-
+        let data: Data
         let response: URLResponse
 
         do {
-            (_, response) = try await session.data(for: request)
+            (data, response) = try await session.data(for: request)
         } catch {
             throw NetworkError.unknown(error)
         }
@@ -124,9 +125,14 @@ final class DefaultNetworkService: NetworkService {
             throw NetworkError.unauthorized
 
         default:
+            let message = (try? JSONDecoder().decode(ServerMessage.self, from: data))?.message
             throw NetworkError.serverError(
-                statusCode: httpResponse.statusCode
+                statusCode: httpResponse.statusCode, message: message
             )
         }
     }
+}
+
+private struct ServerMessage: Decodable {
+    let message: String
 }
