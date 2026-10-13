@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  ScanProductViewModel.swift
 //  StockFlow
 //
 //  Created by Cicek on 12.10.26.
