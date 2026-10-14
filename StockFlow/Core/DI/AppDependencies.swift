@@ -156,7 +156,7 @@ final class AppDependencies {
     func makeScanProductViewModel() -> ScanProductViewModel {
         ScanProductViewModel(
             productRepository: productRepository,
-            salesStore: salesStore
+            salesStore: salesStore, productsStore: productsStore
         )
     }
 }

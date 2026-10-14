@@ -10,7 +10,7 @@ import Observation
 @Observable
 @MainActor
 final class ProductsStore {
-
+    
     private let productRepository: ProductRepository
     
     var isLoading: Bool = false
@@ -23,7 +23,7 @@ final class ProductsStore {
     
     private var productsPageSize = 10
     private var lowStockPageSize = 10
-
+    
     var products: [ProductsResponse] = []
     var lowStockProducts: [ProductsResponse] = []
     
@@ -39,7 +39,7 @@ final class ProductsStore {
     init(productRepository: ProductRepository) {
         self.productRepository = productRepository
     }
-
+    
     // MARK: - Products
     
     func reset() {
@@ -95,8 +95,8 @@ final class ProductsStore {
         lowStockPageSize = limit
         currentLowStockPage = 1
         hasMoreLowStock = true
-
-      let response = try await productRepository.getLowStockProducts(page: currentLowStockPage, limit: limit)
+        
+        let response = try await productRepository.getLowStockProducts(page: currentLowStockPage, limit: limit)
         
         lowStockProducts = response.items
         totalLowProducts = response.total
@@ -125,18 +125,25 @@ final class ProductsStore {
         totalLowProducts = response.total
         hasMoreLowStock = response.hasNext
     }
-
+    
     func addProduct(_ request: ProductRequest) async throws -> ProductsResponse {
         let response = try await productRepository.createProduct(request)
         try await loadProducts(limit: productsPageSize)
+        await refreshLowStock()
         return response
     }
     
     func saveProduct(id: Int, request: ProductRequest) async throws -> ProductsResponse {
         let response = try await productRepository.updateProduct(id: id, request: request)
+        
         if let index = products.firstIndex(where: { $0.id == id }) {
             products[index] = response
         }
+        if let index = lowStockProducts.firstIndex(where: { $0.id == id }) {
+            lowStockProducts[index] = response
+        }
+        
+        await refreshLowStock()
         return response
     }
     
@@ -147,16 +154,33 @@ final class ProductsStore {
         lowStockProducts.removeAll { $0.id == id }
         totalProducts = max(0, totalProducts - 1)
         
+        await refreshLowStock()
     }
-
+    
+    // MARK: - Sync
+    
+    /// Product stock changed outside of the products screens (e.g. after a sale).
+    func refreshStock() async {
+        try? await loadProducts(limit: productsPageSize)
+        await refreshLowStock()
+    }
+    
+    func product(withID id: Int) -> ProductsResponse? {
+        products.first { $0.id == id } ?? lowStockProducts.first { $0.id == id }
+    }
+    
+    private func refreshLowStock() async {
+        try? await loadLowStock(limit: lowStockPageSize)
+    }
+    
     // MARK: - Computed Properties
-
+    
     var productsCount: Int {
         totalProducts
     }
-
+    
     var lowStockCount: Int {
         totalLowProducts
     }
-
+    
 }

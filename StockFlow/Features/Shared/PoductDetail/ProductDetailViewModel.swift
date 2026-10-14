@@ -16,7 +16,7 @@ final class ProductDetailViewModel {
     private let initialProduct: ProductsResponse
     
     var product: ProductsResponse {
-        productStore.products.first { $0.id == initialProduct.id } ?? initialProduct
+        productStore.product(withID: initialProduct.id) ?? initialProduct
     }
     
     var state: ProductDetailViewState = .idle
