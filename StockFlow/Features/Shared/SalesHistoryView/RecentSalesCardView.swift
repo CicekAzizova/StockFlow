@@ -39,7 +39,7 @@ struct RecentSalesCardView: View {
             
             Text(sale.totalPrice.asCurrency)
                 .font(.inter(.semiBold, size: 16))
-                .foregroundStyle(.brandPrimary)
+                .foregroundStyle(.primaryBlue)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
                 .layoutPriority(1)

@@ -57,6 +57,7 @@ struct SaleDetailView: View {
     private var detailsCard: some View {
         VStack(spacing: 16) {
             InfoRow(title: "Quantity", value: "\(sale.quantity)")
+            Divider()
             InfoRow(title: "Unit price", value: sale.unitPrice.asCurrency)
 
             Divider()

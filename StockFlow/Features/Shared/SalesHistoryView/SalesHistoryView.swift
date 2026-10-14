@@ -19,7 +19,7 @@ struct SalesHistoryView: View {
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            await viewModel.loadSales()
+            await viewModel.loadSalesIfNeeded()
         }
         .refreshable {
             await viewModel.refresh()
@@ -27,38 +27,57 @@ struct SalesHistoryView: View {
     }
     
     @ViewBuilder
-        private var content: some View {
-            switch viewModel.state {
-            case .idle, .loading:
-                ProgressView()
-
-            case .loaded:
-                salesList
-
-            case .error(let message):
+    private var content: some View {
+        switch viewModel.state {
+        case .idle, .loading:
+            ProgressView()
+            
+        case .loaded:
+            if viewModel.sales.isEmpty {
                 ContentUnavailableView(
-                    "Something went wrong",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text(message)
-                )
+                    "No sales yet",
+                    systemImage: "bag",
+                    description: Text("Completed sales will appear here."))
+            } else {
+                salesList
+            }
+            
+        case .error(let message):
+            ContentUnavailableView {
+                Label("Something went wrong", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("Try again") {
+                    Task { await viewModel.loadSales() }
+                }
             }
         }
-
-        private var salesList: some View {
-            ScrollView {
-                LazyVStack(spacing: 10) {
-                    ForEach(viewModel.sales, id: \.id) { sale in
+    }
+    
+    private var salesList: some View {
+        ScrollView {
+            LazyVStack(spacing: 10) {
+                ForEach(viewModel.sales, id: \.id) { sale in
+                    NavigationLink(value: SalesRoute.detail(sale)) {
                         RecentSalesCardView(sale: sale)
-                            .task {
-                                if sale.id == viewModel.sales.last?.id {
-                                    Task {
-                                        await viewModel.loadMoreSales()
-                                    }
-                                }
-                            }
+                    }
+                    .buttonStyle(.plain)
+                    .task {
+                        if sale.id == viewModel.sales.last?.id {
+                            await viewModel.loadMoreSales()
+                        }
                     }
                 }
-                .padding()
+                
+                if let error = viewModel.loadMoreError {
+                    Text(error)
+                        .font(.inter(.regular, size: 13))
+                        .foregroundStyle(.textSecondary)
+                }
+                
             }
+            .padding()
         }
+    }
 }
