@@ -62,6 +62,9 @@ struct CreateStoreView: View {
             }
             .scrollDismissesKeyboard(.interactively)
             
+            .scrollDismissesKeyboard(.interactively)
+            .dismissKeyboardOnTap()
+            
             createStoreButton
         }
     }

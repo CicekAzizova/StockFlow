@@ -159,5 +159,7 @@ struct AddSalesAssociateView: View {
             associateForm
             createSalesAssociateButton
         }
+        .scrollDismissesKeyboard(.interactively)
+        .dismissKeyboardOnTap()
     }
 }

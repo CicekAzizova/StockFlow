@@ -72,6 +72,8 @@ struct ProductsView: View {
                         }
                     }
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .dismissKeyboardOnTap()
             }
         }
     }
@@ -94,6 +96,7 @@ struct ProductsView: View {
                 content
             }
             .padding()
+            .dismissKeyboardOnTap()
             .task {
                 await viewModel.loadProductsIfNeeded()
             }

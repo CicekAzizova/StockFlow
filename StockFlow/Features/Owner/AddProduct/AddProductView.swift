@@ -71,6 +71,8 @@ struct AddProductView: View {
             }
             .padding(.horizontal, 24)
         }
+        .scrollDismissesKeyboard(.interactively)
+        .dismissKeyboardOnTap()
     }
     
     // MARK: - Header
