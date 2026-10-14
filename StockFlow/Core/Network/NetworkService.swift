@@ -56,7 +56,7 @@ final class DefaultNetworkService: NetworkService {
             guard let token = try tokenStoring.readToken() else {
                 throw KeychainServiceError.missingToken
             }
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(token)", forHTTPHeaderField: HttpHeader.authorization)
         }
         
         let data: Data
@@ -111,7 +111,7 @@ final class DefaultNetworkService: NetworkService {
 
             request.setValue(
                 "Bearer \(token)",
-                forHTTPHeaderField: "Authorization"
+                forHTTPHeaderField: HttpHeader.authorization
             )
         }
         let data: Data
