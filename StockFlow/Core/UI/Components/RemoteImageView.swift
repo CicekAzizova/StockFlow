@@ -36,7 +36,7 @@ struct RemoteImageView: View {
             cleanURL = trimmedURL
         }
 
-        return URL(string: cleanURL)
+        return AppConfig.imageURL(from: cleanURL)
     }
 
     var body: some View {

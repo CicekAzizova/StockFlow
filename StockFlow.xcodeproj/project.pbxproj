@@ -415,6 +415,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StockFlow/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "StockFlow uses the camera to scan product barcodes.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "StockFlow connects to your local backend server";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -450,6 +451,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = StockFlow/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "StockFlow uses the camera to scan product barcodes.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "StockFlow connects to your local backend server";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
