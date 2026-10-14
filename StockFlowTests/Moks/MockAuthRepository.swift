@@ -2,21 +2,23 @@
 //  MockAuthRepository.swift
 //  StockFlow
 //
-//  Created by Cicek on 23.09.26.
+//  Created by Cicek on 15.10.26.
 //
 
 import Foundation
 @testable import StockFlow
 
+@MainActor
 final class MockAuthRepository: AuthRepository {
-    
-    let result: Result<LoginResponse, Error>
-    
+    var result: Result<LoginResponse, Error>
+    private(set) var loginCallCount = 0
+
     init(result: Result<LoginResponse, Error>) {
         self.result = result
     }
-    
+
     func login(email: String, password: String) async throws -> LoginResponse {
-        try result.get()
+        loginCallCount += 1
+        return try result.get()
     }
 }
