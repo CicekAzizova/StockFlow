@@ -64,6 +64,7 @@ struct LoginView: View {
                 onSubmit: {
                     focusedField = .password
                 },
+                accessibilityID: "loginEmailField",
                 text: $viewModel.email,
                 focusedFieldBinding: $focusedField
             )
@@ -78,6 +79,7 @@ struct LoginView: View {
                         await performLogin()
                     }
                 },
+                accessibilityID: "loginPasswordField",
                 text: $viewModel.password,
                 focusedFieldBinding: $focusedField
             )

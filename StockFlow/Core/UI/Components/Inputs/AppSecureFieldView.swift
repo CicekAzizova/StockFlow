@@ -15,6 +15,8 @@ struct AppSecureFieldView<FocusedField: Hashable>: View {
     var submitLabel: SubmitLabel = .done
     var onSubmit: (() -> Void)? = nil
     
+    var accessibilityID: String = ""
+    
     @Binding var text: String
     
     var focusedFieldBinding: FocusState<FocusedField?>.Binding
@@ -29,8 +31,10 @@ struct AppSecureFieldView<FocusedField: Hashable>: View {
                 Group {
                     if isAppear {
                         TextField(placeholder, text: $text)
+                            .accessibilityIdentifier(accessibilityID)
                     } else {
                         SecureField(placeholder, text: $text)
+                            .accessibilityIdentifier(accessibilityID)
                     }
                 }
                 .focused(

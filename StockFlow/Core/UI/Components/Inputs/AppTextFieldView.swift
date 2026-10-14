@@ -19,7 +19,9 @@ struct AppTextFieldView<FocusedField: Hashable>: View {
     var keyboardType: UIKeyboardType = .default
     var submitLabel: SubmitLabel = .next
     var onSubmit: (() -> Void)? = nil
-    var iconAction: (() -> Void)? = nil 
+    var iconAction: (() -> Void)? = nil
+    
+    var accessibilityID: String = ""
 
     @Binding var text: String
 
@@ -40,6 +42,7 @@ struct AppTextFieldView<FocusedField: Hashable>: View {
                         onSubmit?()
                     }
                     .foregroundStyle(.textPrimary)
+                    .accessibilityIdentifier(accessibilityID)
 
                 if let icon {
                     if let iconAction {
