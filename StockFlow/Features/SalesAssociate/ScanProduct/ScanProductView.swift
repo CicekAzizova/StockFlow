@@ -10,7 +10,6 @@ import SwiftUI
 struct ScanProductView: View {
 
     @State var viewModel: ScanProductViewModel
-    @State private var manualCode = ""
     @Environment(\.dismiss) private var dismiss
 
     init(viewModel: ScanProductViewModel) {
@@ -49,7 +48,6 @@ struct ScanProductView: View {
                 Text("Total: \(total.asCurrency)")
             } actions: {
                 Button("Scan another") {
-                    manualCode = ""
                     viewModel.rescan()
                 }
                 .buttonStyle(.borderedProminent)
@@ -91,11 +89,6 @@ struct ScanProductView: View {
         BarcodeInputView { code in
             Task { await viewModel.handleScanned(code: code) }
         }
-    }
-
-    private func submitManualCode() {
-        let code = manualCode
-        Task { await viewModel.handleScanned(code: code) }
     }
 
     // MARK: - Product & sale

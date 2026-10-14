@@ -1,5 +1,5 @@
 //
-//  StoreEndPoint.swift
+//  StoreEndpoint.swift
 //  StockFlow
 //
 //  Created by Cicek on 23.09.26.

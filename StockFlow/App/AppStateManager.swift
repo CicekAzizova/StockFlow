@@ -56,7 +56,7 @@ final class  AppStateManager {
         do {
             try tokenStorage.deleteToken()
         } catch  {
-            print("Logout error: \(error.localizedDescription)")
+            
         }
         user = nil
         onLogout?()

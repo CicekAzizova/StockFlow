@@ -15,8 +15,6 @@ final class TeamViewModel {
     
     var state: TeamViewState = .idle
     
-    var deleteError: String?
-    
     init(repository: SalesAssociateRepository) {
         self.repository = repository
     }
