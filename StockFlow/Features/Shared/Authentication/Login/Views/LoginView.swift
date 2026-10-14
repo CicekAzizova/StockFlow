@@ -123,10 +123,7 @@ struct LoginView: View {
     
     var createStoreButton: some View {
         NavigationLink {
-            CreateStoreView(
-                viewModel: dependencies
-                    .makeCreateStoreViewModel(), appStateManager: appStateManager
-            )
+            CreateStoreView(viewModel: dependencies.makeCreateStoreViewModel(appStateManager: appStateManager))
         } label: {
             Text("Create Store")
                 .font(.inter(.medium, size: 15))
@@ -150,10 +147,6 @@ struct LoginView: View {
     @MainActor
     private func performLogin() async {
         await viewModel.login()
-
-        if case .loaded(_) = viewModel.state {
-            appStateManager.state = .authenticated
-        }
     }
 
     @ViewBuilder

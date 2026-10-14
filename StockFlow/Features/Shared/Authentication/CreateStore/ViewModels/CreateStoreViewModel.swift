@@ -25,9 +25,11 @@ final class CreateStoreViewModel {
     var fieldErrors: [CreateStoreFocusedField: String] = [:]
     
     private let storeRepository: StoreRepository
+    private let appStateManager: AppStateManager
     
-    init(storeRepository: StoreRepository) {
+    init(storeRepository: StoreRepository, appStateManager: AppStateManager) {
         self.storeRepository = storeRepository
+        self.appStateManager = appStateManager
     }
     
     func createStore() async {
@@ -47,6 +49,7 @@ final class CreateStoreViewModel {
             let response = try await storeRepository.createStore(request)
             
             state = .success(response)
+            await appStateManager.readToken()
         } catch  {
             state = .error(error.localizedDescription)
         }

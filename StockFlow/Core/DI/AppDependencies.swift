@@ -89,9 +89,9 @@ final class AppDependencies {
     }
 
     @MainActor
-    func makeCreateStoreViewModel() -> CreateStoreViewModel {
+    func makeCreateStoreViewModel(appStateManager: AppStateManager) -> CreateStoreViewModel {
         CreateStoreViewModel(
-            storeRepository: storeRepository
+            storeRepository: storeRepository, appStateManager: appStateManager
         )
     }
     

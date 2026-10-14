@@ -10,10 +10,6 @@ import SwiftUI
 struct CreateStoreView: View {
 
     @State var viewModel: CreateStoreViewModel
-    let appStateManager: AppStateManager
-
-
-
     @FocusState private var focusedField: CreateStoreFocusedField?
     
     var body: some View {
@@ -205,7 +201,9 @@ struct CreateStoreView: View {
                 await viewModel.createStore()
                 
                 if case .success = viewModel.state {
-                    appStateManager.state = .authenticated
+                    Task {
+                        await viewModel.createStore()
+                    }
                 }
             }
         }
@@ -216,15 +214,3 @@ struct CreateStoreView: View {
     }
 }
 
-// MARK: - Preview
-
-#Preview {
-    let dependencies = AppDependencies()
-    let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
-
-
-    CreateStoreView(
-        viewModel: dependencies.makeCreateStoreViewModel(), appStateManager: appStateManager
-    )
- 
-}
