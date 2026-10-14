@@ -196,6 +196,7 @@
 					};
 					1B5B63BE305F2E3600947F8C = {
 						CreatedOnToolsVersion = 26.3;
+						LastSwiftMigration = 2630;
 						TestTargetID = 1B5B63A7305F2E3500947F8C;
 					};
 				};
@@ -526,6 +527,7 @@
 		1B5B63D0305F2E3600947F8C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FWAKFXF45P;
@@ -536,6 +538,7 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -546,6 +549,7 @@
 		1B5B63D1305F2E3600947F8C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FWAKFXF45P;
