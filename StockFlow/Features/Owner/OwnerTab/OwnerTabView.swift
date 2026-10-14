@@ -90,10 +90,9 @@ struct OwnerTabView: View {
                 NavigationStack(path: $teamPath) {
                     TeamView(path: $teamPath, viewModel: dependencies.makeTeamViewModel())
                         .navigationDestination(for: TeamRoute.self) { route in
-                            switch route {
-                            case .addSalesAssociate:
-                                AddSalesAssociateView(viewModel: dependencies.makeAddSalesAssociateViewModel(), path: $teamPath)
-                            }
+                            TeamDestinationView(route: route, dependencies: dependencies, path: $teamPath)                        }
+                        .navigationDestination(for: SalesRoute.self) { route in
+                            SalesDestinationView(route: route, dependencies: dependencies)
                         }
                 }
             } label: {

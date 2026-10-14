@@ -134,6 +134,11 @@ final class AppDependencies {
     }
     
     @MainActor
+    func makeSalesAssociateDetailViewModel(associate: SalesAssociateResponse) -> SalesAssociateDetailViewModel {
+        SalesAssociateDetailViewModel(repository: salesAssociateRepository, salesRepository: salesRepository, associate: associate)
+    }
+    
+    @MainActor
     func makeSalesAssociateSalesViewModel() -> SalesAssociateSalesViewModel {
         SalesAssociateSalesViewModel(salesStore: salesStore)
     }

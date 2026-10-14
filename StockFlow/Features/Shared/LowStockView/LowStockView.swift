@@ -21,7 +21,7 @@ struct LowStockView: View {
         .navigationTitle("Low Stock")
         .navigationBarTitleDisplayMode(.inline)
         .task {
-            await viewModel.loadProducts()
+            await viewModel.loadProductsIfNeeded()
         }
         .refreshable {
             await viewModel.refresh()
@@ -33,16 +33,28 @@ struct LowStockView: View {
         switch viewModel.state {
         case .idle, .loading:
             ProgressView()
-
+            
         case .loaded:
-            lowStockList
+            if viewModel.products.isEmpty {
+                ContentUnavailableView(
+                    "Stock levels are healthy",
+                    systemImage: "checkmark.circle",
+                    description: Text("No products are running low.")
+                )
+            } else {
+                lowStockList
+            }
 
         case .error(let message):
-            ContentUnavailableView(
-                "Something went wrong",
-                systemImage: "exclamationmark.triangle",
-                description: Text(message)
-            )
+            ContentUnavailableView {
+                Label("Something went wrong", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(message)
+            } actions: {
+                Button("Try again") {
+                    Task { await viewModel.loadProducts() }
+                }
+            }
         }
     }
 
@@ -56,6 +68,16 @@ struct LowStockView: View {
                         SummaryCardView(product: product)
                     }
                     .buttonStyle(.plain)
+                    .task {
+                        if product.id == viewModel.products.last?.id {
+                            await viewModel.loadMoreProducts()
+                        }
+                    }
+                }
+                if let error = viewModel.loadMoreError {
+                    Text(error)
+                        .font(.inter(.regular, size: 13))
+                        .foregroundStyle(.textSecondary)
                 }
             }
             .padding()

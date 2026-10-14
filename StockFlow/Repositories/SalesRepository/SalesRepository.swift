@@ -14,6 +14,7 @@ protocol SalesRepository {
             limit: Int
         ) async throws -> PaginationResponse<SaleResponse>
     func createSale(_ request: CreateSaleRequest) async throws -> CreateSaleResponse
+    func getSales(sellerId: Int, page: Int, limit: Int) async throws -> PaginationResponse<SaleResponse>
 
 }
 final class DefaultSalesRepository: SalesRepository {
@@ -32,5 +33,10 @@ final class DefaultSalesRepository: SalesRepository {
     }
     func createSale(_ request: CreateSaleRequest) async throws -> CreateSaleResponse {
         try await networkService.request(SalesEndpoint.createSale(request))
+    }
+    func getSales(sellerId: Int, page: Int, limit: Int) async throws -> PaginationResponse<SaleResponse> {
+        try await networkService.request(
+            SalesEndpoint.sellerSales(sellerId: sellerId, page: page, limit: limit)
+        )
     }
 }

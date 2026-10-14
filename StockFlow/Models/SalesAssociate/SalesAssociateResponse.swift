@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SalesAssociateResponse: Decodable {
+struct SalesAssociateResponse: Decodable, Hashable {
     let id: Int
     let name: String
     let surname: String

@@ -8,6 +8,11 @@
 enum TeamViewState {
     case idle
     case loading
-    case loaded([SalesAssociateResponse])
+    case loaded
     case error(String)
+    
+    var isLoaded: Bool {
+        if case .loaded = self { return true }
+        return false
+    }
 }

@@ -139,26 +139,15 @@ struct ProductDetailView: View {
         }
         .background(Color.background)
         .confirmationDialog(
-            "Delete Product",
             isPresented: $showingDeleteConfirmation,
-            titleVisibility: .visible
-        ) {
-            Button("Delete", role: .destructive) {
+            title: "Delete Product",
+            message: "Are you sure you want to delete this product?",
+            confirmTitle: "Delete") {
                 Task {
                     await viewModel.deleteProduct()
-                    
-                    if case .deleted = viewModel.state {
-                        path.removeLast()
-                    }
-                    
-
+                    if case .deleted = viewModel.state { path.removeLast() }
                 }
             }
-
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Are you sure you want to delete this product?")
-        }
     }
     
     var body: some View {

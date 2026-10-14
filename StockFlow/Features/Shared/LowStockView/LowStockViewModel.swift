@@ -17,14 +17,23 @@ final class LowStockViewModel {
     var state: LowStockViewState = .idle
     
     var loadMoreError: String?
+    
+    var products: [ProductsResponse] {
+        productStore.lowStockProducts
+    }
 
     init(productStore: ProductsStore) {
         self.productStore = productStore
     }
-
+    
+    func loadProductsIfNeeded() async {
+        guard !state.isLoaded else { return }
+        await loadProducts()
+    }
+    
     func loadProducts() async {
         let previousState = state
-        state = .loading
+        if !state.isLoaded { state = .loading }
 
         do {
             try await productStore.loadLowStock(limit: 10)
@@ -51,13 +60,5 @@ final class LowStockViewModel {
         catch {
             loadMoreError = error.localizedDescription
         }
-    }
-
-    var products: [ProductsResponse] {
-        productStore.lowStockProducts
-    }
-
-    var totalCount: Int {
-        productStore.totalLowProducts
     }
 }

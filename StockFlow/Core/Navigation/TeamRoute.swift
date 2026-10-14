@@ -7,4 +7,5 @@
 
 enum TeamRoute: Hashable {
     case addSalesAssociate
+    case salesAssociateDetail(SalesAssociateResponse)
 }

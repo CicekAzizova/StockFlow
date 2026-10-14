@@ -37,8 +37,8 @@ struct TeamView: View {
         case .loading:
             ProgressView("Loading team...")
             
-        case .loaded(let salesAssociates):
-            if salesAssociates.isEmpty {
+        case .loaded:
+            if viewModel.salesAssociates.isEmpty {
                 ContentUnavailableView(
                     "No Team Members",
                     systemImage: "person.2",
@@ -54,32 +54,23 @@ struct TeamView: View {
                         .listRowBackground(Color.clear)
                     
                     Section {
-                        ForEach(salesAssociates, id: \.id) { associate in
-                            SalesAssociateInfoCardView(
-                                name: associate.name,
-                                surname: associate.surname,
-                                todaySalesText: "Today's sales",
-                                price: associate.todaySales
-                            )
+                        ForEach(viewModel.salesAssociates, id: \.id) { associate in
+                            
+                            Button {
+                                path.append(TeamRoute.salesAssociateDetail(associate))
+                            } label: {
+                                SalesAssociateInfoCardView(
+                                    name: associate.name,
+                                    surname: associate.surname,
+                                    todaySalesText: "Today's sales",
+                                    price: associate.todaySales
+                                )
+                            }
                             .listRowInsets(
                                 EdgeInsets(top: 0, leading: 0, bottom: 10, trailing: 0)
                             )
                             .listRowSeparator(.hidden)
                             .listRowBackground(Color.clear)
-                            .swipeActions(
-                                edge: .trailing,
-                                allowsFullSwipe: false
-                            ) {
-                                Button(role: .destructive) {
-                                    Task {
-                                        await viewModel.deleteSalesAssociate(
-                                            id: associate.id
-                                        )
-                                    }
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
-                            }
                         }
                     }
                 }
