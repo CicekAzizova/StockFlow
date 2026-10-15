@@ -20,23 +20,35 @@ struct LowStockSection: View {
                     .font(.inter(.bold, size: 18))
                 Spacer()
                 
-                Button("See All") {
-                    path.append(HomeRoute.lowStock)
-                }
-                .font(.inter(.medium, size: 13))
-                .foregroundStyle(.seeAllButton)
-                .padding(.trailing, 8)
-            }
-            LazyVStack {
-                ForEach(products, id: \.id) { product in
-                    Button {
-                        path.append(ProductRoute.productDetail(product))
-
-                    }label: {
-                        SummaryCardView(product: product)
+                if !products.isEmpty {
+                    
+                    Button("See All") {
+                        path.append(HomeRoute.lowStock)
                     }
-                    .buttonStyle(.plain)
+                    .font(.inter(.medium, size: 13))
+                    .foregroundStyle(.seeAllButton)
+                    .padding(.trailing, 8)
+                }
+            }
+            
+            if products.isEmpty {
+                Text("No sales yet")
+                    .font(.inter(.regular, size: 14))
+                    .foregroundStyle(.textSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+            } else {
+                LazyVStack {
+                    ForEach(products, id: \.id) { product in
+                        Button {
+                            path.append(ProductRoute.productDetail(product))
+                            
+                        }label: {
+                            SummaryCardView(product: product)
+                        }
+                        .buttonStyle(.plain)
                         
+                    }
                 }
             }
         }

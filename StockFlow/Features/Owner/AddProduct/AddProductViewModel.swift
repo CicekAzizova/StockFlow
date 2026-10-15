@@ -87,7 +87,7 @@ final class AddProductViewModel {
         for item in pickerItems {
             guard
                 let data = try? await item.loadTransferable(type: Data.self),
-                let image = UIImage(data: data),
+                let image = UIImage(data: data)?.resized(maxDimension: 1200),
                 let jpegData = image.jpegData(compressionQuality: 0.8) else { continue }
             
             loaded.append(SelectedImage(data: jpegData, preview: image))
