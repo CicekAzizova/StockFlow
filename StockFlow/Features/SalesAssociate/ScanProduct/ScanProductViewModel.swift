@@ -83,7 +83,7 @@ final class ScanProductViewModel {
     
     var totalPrice: Double {
         guard case .found(let product) = state else { return 0 }
-        return product.price * Double(quantity)
+        return product.discountedPrice * Double(quantity)
     }
     
     // MARK: - Sale

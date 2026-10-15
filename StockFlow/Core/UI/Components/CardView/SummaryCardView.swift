@@ -30,6 +30,10 @@ struct SummaryCardView: View {
                 )
                     .font(.inter(.bold, size: 14))
                     .foregroundStyle(.primaryBlue)
+                
+                Text(product.discountedPrice.asCurrency)
+                    .font(.inter(.bold, size: 14))
+                    .foregroundStyle(.primaryBlue)
             }
             Spacer()
         }

@@ -85,10 +85,9 @@ struct ProductDetailView: View {
                 value: product.price.formatted(
                     .currency(code: "USD").presentation(.isoCode)))
 
-            informationRow(
-                title: "Discount",
-                value: product.discount.formatted(.number.precision(.fractionLength(0))) + "%"
-            )
+            if product.hasDiscount {
+                informationRow(title: "Price after discount", value: product.discountedPrice.asCurrency)
+            }
             informationRow(
                 title: "Current stock",
                 value: "\(product.quantity) units"

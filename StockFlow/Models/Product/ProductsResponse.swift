@@ -40,4 +40,10 @@ extension ProductsResponse {
             return .inStock
         }
     }
+    
+    var discountedPrice: Double {
+        (price * (100 - discount)).rounded() / 100
+    }
+
+    var hasDiscount: Bool { discount > 0 }
 }

@@ -100,6 +100,15 @@ struct ScanProductView: View {
 
                 VStack(spacing: 16) {
                     InfoRow(title: "In stock", value: "\(product.quantity)")
+                    
+                    if product.hasDiscount {
+                        InfoRow(
+                            title: "Discount",
+                            value: product.discount.formatted(.number.precision(.fractionLength(0))) + "%"
+                        )
+                    }
+                    
+                    InfoRow(title: "Unit price", value: product.discountedPrice.asCurrency)
 
                     HStack {
                         Text("Quantity").foregroundStyle(.textSecondary)
