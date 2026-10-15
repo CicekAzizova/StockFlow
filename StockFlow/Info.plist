@@ -15,5 +15,10 @@
 		<string>Inter_28pt-Medium.ttf</string>
 		<string>Inter_28pt-ExtraBold.ttf</string>
 	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>background</string>
+	</dict>
 </dict>
 </plist>

@@ -21,7 +21,7 @@ struct AppRouter: View {
     var content: some View {
         switch appStateManager.state {
         case .loading:
-            ProgressView()
+            SplashView()
         case .unauthenticated:
             LoginView(viewModel: dependencies.makeLoginViewModel(appStateManager: appStateManager), dependencies: dependencies, appStateManager: appStateManager)
         case .authenticated:
