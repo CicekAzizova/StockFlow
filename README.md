@@ -8,7 +8,7 @@ A **sales associate** scans products and records sales.
 
 ## Screenshots
 
-| Splash | Login | Products |
+| Splash | Login | Home |
 |:--:|:--:|:--:|
 | <img src="Screenshots/01-splash.png" width="220"> | <img src="Screenshots/02-login.png" width="220"> | <img src="Screenshots/03-products.png" width="220"> |
 
