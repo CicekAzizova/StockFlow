@@ -92,3 +92,20 @@ struct HomeView: View {
         }
     }
 }
+#Preview("Success") {
+    @Previewable @State var path = NavigationPath()
+    let viewModel = HomeViewModel(
+        productStore: ProductsStore(productRepository: PreviewProductRepository()),
+        salesStore: SalesStore(salesRepository: PreviewSalesRepository())
+    )
+    HomeView(viewModel: viewModel, path: $path, user: PreviewData.owner)
+}
+
+#Preview("Error") {
+    @Previewable @State var path = NavigationPath()
+    let viewModel = HomeViewModel(
+        productStore: ProductsStore(productRepository: PreviewProductRepository()),
+        salesStore: SalesStore(salesRepository: PreviewSalesRepository(fails: true))
+    )
+    HomeView(viewModel: viewModel, path: $path, user: PreviewData.owner)
+}

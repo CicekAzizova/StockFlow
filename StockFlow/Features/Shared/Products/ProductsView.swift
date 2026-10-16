@@ -94,6 +94,8 @@ struct ProductsView: View {
                 ProductSearchField(query: $viewModel.query)
 
                 content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             }
             .padding()
             .dismissKeyboardOnTap()
@@ -105,4 +107,34 @@ struct ProductsView: View {
             }
         }
     }
+}
+#Preview("Success") {
+    @Previewable @State var path = NavigationPath()
+    let store = ProductsStore(productRepository: PreviewProductRepository())
+    ProductsView(viewModel: ProductViewModel(productStore: store), path: $path, canManageProducts: true)
+}
+
+#Preview("Empty") {
+    @Previewable @State var path = NavigationPath()
+    let store = ProductsStore(productRepository: PreviewProductRepository(result: .success([])))
+    ProductsView(viewModel: ProductViewModel(productStore: store), path: $path, canManageProducts: true)
+}
+
+#Preview("Error") {
+    @Previewable @State var path = NavigationPath()
+    let store = ProductsStore(productRepository: PreviewProductRepository(result: .failure(PreviewError.failed)))
+    ProductsView(viewModel: ProductViewModel(productStore: store), path: $path)
+}
+
+#Preview("Loading") {
+    @Previewable @State var path = NavigationPath()
+    let store = ProductsStore(productRepository: PreviewProductRepository(delay: .seconds(3600)))
+    ProductsView(viewModel: ProductViewModel(productStore: store), path: $path)
+}
+
+#Preview("Dark") {
+    @Previewable @State var path = NavigationPath()
+    let store = ProductsStore(productRepository: PreviewProductRepository())
+    ProductsView(viewModel: ProductViewModel(productStore: store), path: $path, canManageProducts: true)
+        .preferredColorScheme(.dark)
 }

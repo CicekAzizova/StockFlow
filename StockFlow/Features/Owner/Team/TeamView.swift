@@ -19,6 +19,8 @@ struct TeamView: View {
             VStack {
                 header
                 content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
                 
             }
             .padding()
