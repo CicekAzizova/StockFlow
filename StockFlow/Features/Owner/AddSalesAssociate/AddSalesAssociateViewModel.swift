@@ -24,6 +24,7 @@ final class AddSalesAssociateViewModel {
     var password: String = ""
     
     var nameError: String?
+    var surnameError: String?
     var emailError: String?
     var passwordError: String?
     
@@ -55,29 +56,35 @@ final class AddSalesAssociateViewModel {
     
     private func validateFields() -> Bool {
         nameError = nil
+        surnameError = nil
         emailError = nil
         passwordError = nil
 
-        if name.isBlank{
+        if name.isBlank {
             nameError = "First name is required"
+        }
+        
+        if surname.isBlank {
+            surnameError = "Surname is required"
         }
 
         let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if trimmedEmail.isEmpty {
             emailError = "Email is required"
-        } else if !trimmedEmail.isValidEmail{
+        } else if !trimmedEmail.isValidEmail {
             emailError = "Please enter a valid email"
         }
 
         if password.isEmpty {
             passwordError = "Password is required"
         } else if password.count <= 6 {
-            passwordError = "Password must be more than 6 characters"
+            passwordError = "Password must contain at least 6 characters"
         }
-
+        
         return nameError == nil &&
-               emailError == nil &&
-               passwordError == nil
+                surnameError == nil &&
+                emailError == nil &&
+                passwordError == nil
     }
 }

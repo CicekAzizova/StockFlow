@@ -70,6 +70,7 @@ struct AddSalesAssociateView: View {
                 placeholder: "Surname",
                 icon: nil,
                 focusedField: .surname,
+                errorMessage: viewModel.surnameError,
                 submitLabel: .next,
                 onSubmit: {
                     focusedField = .fin
