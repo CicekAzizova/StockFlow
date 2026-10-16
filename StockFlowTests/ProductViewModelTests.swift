@@ -7,6 +7,7 @@
 
 import Testing
 @testable import StockFlow
+import Foundation
 
 @MainActor
 struct ProductViewModelTests {
@@ -16,12 +17,13 @@ struct ProductViewModelTests {
     private let outOfStock = TestData.product(id: 3, name: "Cherry", quantity: 0, lowStockLimit: 5)
 
     private func makeSUT(
-        result: Result<PaginationResponse<ProductsResponse>, Error>
+        result: Result<PaginationResponse<ProductsResponse>, Error>,
+        defaults: UserDefaults = UserDefaults(suiteName: UUID().uuidString) ?? .standard
     ) -> ProductViewModel {
         let repository = MockProductRepository()
         repository.productsResult = result
         let store = ProductsStore(productRepository: repository)
-        return ProductViewModel(productStore: store)
+        return ProductViewModel(productStore: store, defaults: defaults)
     }
 
     @Test func loadProductsSucceeds() async {
@@ -74,5 +76,15 @@ struct ProductViewModelTests {
         sut.query = "bAN"
 
         #expect(sut.filteredProducts.map(\.name) == ["Banana"])
+    }
+    
+    @Test func selectedFilterIsRestoredFromDefaults() {
+        let defaults = UserDefaults(suiteName: UUID().uuidString) ?? .standard
+        
+        let first = makeSUT(result: .success(TestData.page([])), defaults: defaults)
+        first.selectedFilter = .lowStock
+        
+        let second = makeSUT(result: .success(TestData.page([])), defaults: defaults)
+        #expect(second.selectedFilter == .lowStock)
     }
 }

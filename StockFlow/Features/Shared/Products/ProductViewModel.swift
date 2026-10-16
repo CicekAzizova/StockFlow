@@ -11,6 +11,9 @@ import Foundation
 final class ProductViewModel {
     
     private let productStore: ProductsStore
+    private let defaults: UserDefaults
+    
+    private static let filterKey = "products.selectedFilter"
     
     var state: ProductsViewState = .idle
     
@@ -18,11 +21,17 @@ final class ProductViewModel {
     
     var loadMoreError: String?
     
-    var selectedFilter: ProductStockFilter = .all
-    
-    init(productStore: ProductsStore) {
-        self.productStore = productStore
+    var selectedFilter: ProductStockFilter {
+        didSet { defaults.set(selectedFilter.rawValue, forKey: Self.filterKey) }
     }
+    
+    init(productStore: ProductsStore, defaults: UserDefaults = .standard) {
+        self.productStore = productStore
+        self.defaults = defaults
+        self.selectedFilter = defaults.string(forKey: Self.filterKey)
+            .flatMap(ProductStockFilter.init(rawValue:)) ?? .all
+    }
+    
     var allProducts: [ProductsResponse] {
         productStore.products
     }
@@ -34,22 +43,22 @@ final class ProductViewModel {
         
         let stockFilteredProducts: [ProductsResponse]
         
-            switch selectedFilter {
-            case .all:
-                stockFilteredProducts = allProducts
-            case .inStock:
-                stockFilteredProducts = allProducts.filter { $0.stockStatus == .inStock }
-            case .lowStock:
-                stockFilteredProducts = allProducts.filter { $0.stockStatus == .lowStock }
-            case .outStock:
-                stockFilteredProducts = allProducts.filter{ $0.stockStatus == .outOfStock }
-            }
-            guard !query.isEmpty else {
-                return stockFilteredProducts
-            }
-            return stockFilteredProducts.filter {
-                $0.name.localizedCaseInsensitiveContains(query)
-            }
+        switch selectedFilter {
+        case .all:
+            stockFilteredProducts = allProducts
+        case .inStock:
+            stockFilteredProducts = allProducts.filter { $0.stockStatus == .inStock }
+        case .lowStock:
+            stockFilteredProducts = allProducts.filter { $0.stockStatus == .lowStock }
+        case .outStock:
+            stockFilteredProducts = allProducts.filter{ $0.stockStatus == .outOfStock }
+        }
+        guard !query.isEmpty else {
+            return stockFilteredProducts
+        }
+        return stockFilteredProducts.filter {
+            $0.name.localizedCaseInsensitiveContains(query)
+        }
         
     }
     
@@ -72,7 +81,7 @@ final class ProductViewModel {
     }
     
     func refresh() async {
-       await loadProducts()
+        await loadProducts()
     }
     
     func loadMoreProducts() async {

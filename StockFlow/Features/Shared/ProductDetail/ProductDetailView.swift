@@ -75,29 +75,29 @@ struct ProductDetailView: View {
     
     private var productInformation: some View {
         VStack(spacing: 20) {
-            informationRow(
+            InfoRow(
                 title: "Category",
                 value: product.category
             )
 
-            informationRow(
+            InfoRow(
                 title: "Price",
-                value: product.price.formatted(
-                    .currency(code: "USD").presentation(.isoCode)))
+                value: product.price.asCurrency)
 
             if product.hasDiscount {
-                informationRow(title: "Price after discount", value: product.discountedPrice.asCurrency)
+                InfoRow(title: "Price after discount", value: product.discountedPrice.asCurrency)
             }
-            informationRow(
+            InfoRow(
                 title: "Current stock",
                 value: "\(product.quantity) units"
             )
 
-            informationRow(
+            InfoRow(
                 title: "Low-stock threshold",
                 value: "\(product.lowStockLimit) units"
             )
         }
+        .font(.inter(.regular, size: 15))
         .padding(20)
         .frame(maxWidth: .infinity)
         .background(.border)
@@ -106,23 +106,6 @@ struct ProductDetailView: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(.border, lineWidth: 1)
         }
-    }
-
-    private func informationRow(
-        title: String,
-        value: String,
-        valueColor: Color = .primary
-    ) -> some View {
-        HStack {
-            Text(title)
-                .foregroundStyle(.secondary)
-
-            Spacer()
-
-            Text(value)
-                .foregroundStyle(valueColor)
-        }
-        .font(.inter(.regular, size: 15))
     }
     
     private var productDetailContent: some View {
