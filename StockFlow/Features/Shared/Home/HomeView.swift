@@ -80,7 +80,7 @@ struct HomeView: View {
                     systemImage: "exclamationmark.triangle"
                 )
             } description: {
-                Text(String(describing: error))
+                Text(error)
             } actions: {
                 Button("Retry") {
                     Task {

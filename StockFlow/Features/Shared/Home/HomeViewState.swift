@@ -1,5 +1,5 @@
 //
-//  ownerHomeState.swift
+//  HomeViewState.swift
 //  StockFlow
 //
 //  Created by Cicek on 03.10.26.

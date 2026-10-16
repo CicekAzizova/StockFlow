@@ -78,7 +78,7 @@ final class AddSalesAssociateViewModel {
 
         if password.isEmpty {
             passwordError = "Password is required"
-        } else if password.count <= 6 {
+        } else if password.count < 6 {
             passwordError = "Password must contain at least 6 characters"
         }
         
