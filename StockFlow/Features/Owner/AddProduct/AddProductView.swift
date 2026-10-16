@@ -120,20 +120,20 @@ struct AddProductView: View {
     
     @ViewBuilder
     private var form: some View {
-        field("Product name", "Enter Product name", .name, next: .sku, text: $viewModel.name)
+        field("Product name", "e.g. Wireless Mouse", .name, next: .sku, text: $viewModel.name)
         field(
-            "SKU", "Enter unique SKU", .sku, next: .category,
+            "SKU", "Unique code, e.g. WM-1001", .sku, next: .category,
             icon: "barcode.viewfinder",
             iconAction: { showScanner = true },
             text: $viewModel.sku
         )
-        field("Category", "Enter product category", .category, next: .description, text: $viewModel.category)
-        field("Description", "Enter product description", .description, next: .price, text: $viewModel.description)
-        field("Price", "Enter product price", .price, next: .discount, keyboard: .decimalPad, text: $viewModel.price)
-        field("Discount", "Enter discount", .discount, next: .costPrice, keyboard: .decimalPad, text: $viewModel.discount)
-        field("Cost price", "Enter cost price", .costPrice, next: .quantity, keyboard: .decimalPad, text: $viewModel.costPrice)
-        field("Quantity", "Enter quantity", .quantity, next: .lowStockLimit, keyboard: .numberPad, text: $viewModel.quantity)
-        field("Low stock limit", "Enter low stock limit", .lowStockLimit, next: nil, keyboard: .numberPad, text: $viewModel.lowStockLimit)
+        field("Category", "e.g. Electronics", .category, next: .description, text: $viewModel.category)
+        field("Description", "Short product description", .description, next: .price, text: $viewModel.description)
+        field("Price ($)", "Selling price, e.g. 19.99", .price, next: .discount, keyboard: .decimalPad, text: $viewModel.price)
+        field("Discount (%)", "0–100, enter 0 for none", .discount, next: .costPrice, keyboard: .decimalPad, text: $viewModel.discount)
+        field("Cost price ($)", "What you paid, e.g. 12.50", .costPrice, next: .quantity, keyboard: .decimalPad, text: $viewModel.costPrice)
+        field("Quantity", "Units in stock, e.g. 50", .quantity, next: .lowStockLimit, keyboard: .numberPad, text: $viewModel.quantity)
+        field("Low stock limit", "Warn when stock is at or below, e.g. 5", .lowStockLimit, next: nil, keyboard: .numberPad, text: $viewModel.lowStockLimit)
     }
     
     // MARK: - Add / Save Button
