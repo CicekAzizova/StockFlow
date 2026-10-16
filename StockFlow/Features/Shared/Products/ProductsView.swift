@@ -32,7 +32,7 @@ struct ProductsView: View {
         switch viewModel.state {
         case .idle, .loading:
             ProgressView()
-        case .loaded(let products):
+        case .loaded:
             if viewModel.allProducts.isEmpty {
                 ContentUnavailableView(
                     "No Products",
