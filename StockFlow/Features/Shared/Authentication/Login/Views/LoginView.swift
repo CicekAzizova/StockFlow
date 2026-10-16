@@ -16,7 +16,7 @@ struct LoginView: View {
     let appStateManager: AppStateManager
 
 
-    @FocusState private var focusedField: CreateStoreFocusedField?
+    @FocusState private var focusedField: LoginFocusedField?
 
     var body: some View {
         NavigationStack {
@@ -40,19 +40,8 @@ struct LoginView: View {
 
     @ViewBuilder
     var loginForm: some View {
+        
         VStack(alignment: .leading, spacing: 8) {
-
-            Image(.logo)
-
-            Text("Welcome back")
-                .font(.inter(.extraBold, size: 30))
-                .foregroundStyle(.textPrimary)
-
-            Text("Sign in to manage Harbor & Pine.")
-                .font(.inter(.regular, size: 15))
-                .foregroundStyle(.textSecondary)
-                .padding(.bottom, 32)
-
             AppTextFieldView(
                 title: "Email",
                 placeholder: "email",
@@ -92,7 +81,18 @@ struct LoginView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    var header: some View {
+        VStack {
+            Image(.logo)
 
+            Text("Welcome back")
+                .font(.inter(.extraBold, size: 30))
+                .foregroundStyle(.textPrimary)
+            Text("Sign in to manage your store.")
+                .font(.inter(.regular, size: 12))
+                .foregroundStyle(.textSecondary)
+        }
+    }
 
     var signInButton: some View {
         AppButtonView(
@@ -135,9 +135,12 @@ struct LoginView: View {
 
     var loginScreen: some View {
         VStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .center, spacing: 16) {
+                Spacer()
+                header
                 loginForm
                 signInButton
+                Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             

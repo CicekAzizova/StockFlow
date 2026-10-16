@@ -1,5 +1,5 @@
 //
-//  AddProductsVies.swift
+//  AddProductsView.swift
 //  StockFlow
 //
 //  Created by Cicek on 27.09.26.
