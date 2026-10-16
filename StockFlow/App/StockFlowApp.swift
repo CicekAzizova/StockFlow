@@ -17,6 +17,10 @@ struct StockFlowApp: App {
         let dependencies = AppDependencies()
         self.dependencies = dependencies
         
+        if CommandLine.arguments.contains("-uitesting") {
+            try? dependencies.tokenStorage.deleteToken()
+        }
+        
         let appStateManager = AppStateManager(tokenStorage: dependencies.tokenStorage, userRepository: dependencies.userRepository)
         
         appStateManager.onLogout = {
