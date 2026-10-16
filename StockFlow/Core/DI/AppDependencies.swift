@@ -51,7 +51,7 @@ final class AppDependencies {
         
         let productRepository = DefaultProductRepository(networkService: networkService)
         
-        let imageUploadRepository = DefaultImageUploadRepository(tokenStorage: tokenStorage)
+        let imageUploadRepository = DefaultImageUploadRepository(networkService: networkService)
         
         let productsStore = ProductsStore(productRepository: productRepository)
         
